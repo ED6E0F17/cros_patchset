@@ -1,0 +1,13 @@
+--- src/scripts/build_library/base_image_util.sh	2012-04-21 21:38:16.161667681 +0100
++++ src/scripts/build_library/base_image_util.sh	2012-05-03 16:54:36.462210458 +0100
+@@ -165,9 +165,7 @@
+   emerge_to_image --root="${ROOT_FS_DIR}" chromeos ${EXTRA_PACKAGES}
+ 
+   # Set /etc/lsb-release on the image.
+-  "${OVERLAY_CHROMEOS_DIR}/scripts/cros_set_lsb_release" \
+-    --root="${ROOT_FS_DIR}" \
+-    --board="${BOARD}"
++  # sudo echo "ChromiumOS">${ROOT_FS_DIR}/etc/lsb-release
+ 
+   # Populates the root filesystem with legacy bootloader templates
+   # appropriate for the platform.  The autoupdater and installer will
