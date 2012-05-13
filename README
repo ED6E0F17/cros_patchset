@@ -1,5 +1,6 @@
-ArmV6 overlay for Raspberry Pi ChromiumOS.
+ArmV6-HardFP Raspberry Pi ChromiumOS.
 
+13th May 2012: It`s Linux, with HardFP: Awesome!
 12th May 2012: Build fixed upstream by Hexxeh.
 18th Apr 2012: Raspberry Pi is a TradeMark.
  1st Mar 2012: Waiting for hardware.
