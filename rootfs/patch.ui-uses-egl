@@ -1,0 +1,14 @@
+--- sbin/session_manager_setup.sh2	2012-05-26 21:57:08.037630751 +0100
++++ sbin/session_manager_setup.sh	2012-05-30 13:07:03.558252535 +0100
+@@ -235,9 +235,9 @@
+   fi
+ fi
+ 
+-# Setup GPU & acceleration flags which differ between x86/ARM SoC
++# Setup GPU & acceleration flags for ARM SoC
+ if [ "$(uname -m)" != "armv7l" ] ; then
+-  ACCELERATED_FLAGS="--enable-accelerated-layers"
++  ACCELERATED_FLAGS="--use-gl=egl"
+ else
+   ACCELERATED_FLAGS="--use-gl=egl \
+                      --ppapi-flash-args=enable-hardware-decoder=1"
