@@ -1,4 +1,6 @@
 force_hdmi_hotplug=1
-arm_freq=800
+#arm_freq=1000
+#core_freq=500
+#sdram_freq=500
+#over_voltage=2
 disable_overscan=1
-gpu_mem_512=128

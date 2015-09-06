@@ -24,11 +24,6 @@ RDEPEND="${DEPEND}"
 src_install() {
 	cros-kernel2_src_install
 
-	"${FILESDIR}/mkimage/imagetool.py" \
-		"$(cros-workon_get_build_dir)/arch/${ARCH}/boot/Image" \
-		"${T}/kernel.img"
-
 	insinto /boot
 	doins "${FILESDIR}"/{cmdline,config}.txt
-	doins "${T}/kernel.img"
 }
