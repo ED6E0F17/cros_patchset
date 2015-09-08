@@ -12,7 +12,7 @@ CROS_WORKON_COMMIT="fb11b39d97371c076eef7c85bbcab5733883a41e"
 inherit git-2 cros-workon cmake-utils
 
 DESCRIPTION="OpenGLES libraries for Raspberry Pi"
-LICENSE="BSD-GOOGLE"
+LICENSE="BSD-Google"
 SLOT="0"
 KEYWORDS="arm"
 IUSE=""
@@ -22,6 +22,8 @@ RDEPEND="!x11-drivers/opengles-bin"
 
 src_unpack() {
 	cros-workon_src_unpack
+	cd "${S}"
+	epatch "${FILESDIR}/piglit.patch"
 }
 
 src_configure() {
@@ -52,10 +54,8 @@ src_install() {
 	dosym /opt/vc/include/vcinclude  /usr/include/vcinclude
 	dosym /opt/vc/include/bcm_host.h /usr/include/bcm_host.h
 
-	pushd /usr/include/interface/vcos
-	dosym /usr/include/interface/vcos/pthreads/vcos_futex_mutex.h    /usr/include/interface/vcos/vcos_futex_mutex.h 
-	dosym /usr/include/interface/vcos/pthreads/vcos_platform.h       /usr/include/interface/vcosvcos_platform.h
-	dosym /usr/include/interface/vcos/pthreads/vcos_platform_types.h /usr/include/interface/vcos/vcos_platform_types.h
-	popd
+	dosym pthreads/vcos_futex_mutex.h    /opt/vc/include/interface/vcos/vcos_futex_mutex.h 
+	dosym pthreads/vcos_platform.h       /opt/vc/include/interface/vcos/vcos_platform.h
+	dosym pthreads/vcos_platform_types.h /opt/vc/include/interface/vcos/vcos_platform_types.h
 }
 

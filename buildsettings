@@ -4,5 +4,6 @@
 BOARD=raspberrypi2
 ./setup_board --board=${BOARD}
 ./set_shared_user_password.sh
-./build_packages  --board=${BOARD} --nowithdev --nowithdebug --nousepkg --nowithautotest
-./build_image --board=${BOARD} --noenable_rootfs_verification
+./build_packages  --board=${BOARD} --nowithdev --nowithdebug --nowithautotest
+./build_image --board=${BOARD} --noenable_rootfs_verification --adjust_part='STATE:=400M'
+
