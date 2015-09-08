@@ -39,20 +39,20 @@ src_install() {
 	dolib.so libbcm_host.so libvchiq_arm.so libvcos.so libcontainers.so
 	popd
 
-	dosym /usr/lib/libEGL.so /usr/lib/libEGL.so.1
-	dosym /usr/lib/libGLESv2.so /usr/lib/libGLESv2.so.2
+	dosym libEGL.so /usr/lib/libEGL.so.1
+	dosym libGLESv2.so /usr/lib/libGLESv2.so.2
 
 	insinto /usr/share/pkgconfig
 	doins "${FILESDIR}/egl.pc"
 	doins "${FILESDIR}/glesv2.pc"
 	doins "${FILESDIR}/bcm_host.pc"
 
-	dosym /opt/vc/include/EGL    /usr/include/EGL
-	dosym /opt/vc/include/GLES   /usr/include/GLES
-	dosym /opt/vc/include/KHL    /usr/include/KHL
-	dosym /opt/vc/include/interface  /usr/include/interface
-	dosym /opt/vc/include/vcinclude  /usr/include/vcinclude
-	dosym /opt/vc/include/bcm_host.h /usr/include/bcm_host.h
+	dosym ../../opt/vc/include/EGL    /usr/include/EGL
+	dosym ../../opt/vc/include/GLES   /usr/include/GLES
+	dosym ../../opt/vc/include/KHR    /usr/include/KHR
+	dosym ../../opt/vc/include/interface  /usr/include/interface
+	dosym ../../opt/vc/include/vcinclude  /usr/include/vcinclude
+	dosym ../../opt/vc/include/bcm_host.h /usr/include/bcm_host.h
 
 	dosym pthreads/vcos_futex_mutex.h    /opt/vc/include/interface/vcos/vcos_futex_mutex.h 
 	dosym pthreads/vcos_platform.h       /opt/vc/include/interface/vcos/vcos_platform.h
