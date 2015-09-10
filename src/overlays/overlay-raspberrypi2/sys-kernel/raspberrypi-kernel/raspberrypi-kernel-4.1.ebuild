@@ -3,16 +3,16 @@
 
 EAPI=4
 
-CROS_WORKON_REPO="git://github.com/raspberrypi"
+CROS_WORKON_REPO="git://github.com/anholt"
 CROS_WORKON_PROJECT="linux"
-CROS_WORKON_EGIT_BRANCH="rpi-4.2.y"
+CROS_WORKON_EGIT_BRANCH="vc4-km2-v3d-rpi2"
 CROS_WORKON_BLACKLIST="1"
-CROS_WORKON_COMMIT="7acc822215"
+CROS_WORKON_COMMIT="9268e6bf7ba2a6832c0288555bf592a63614a754"
 
 # This must be inherited *after* EGIT/CROS_WORKON variables defined
 inherit git-2 cros-kernel2 cros-workon
 
-DESCRIPTION="Chrome OS Kernel-raspberrypi"
+DESCRIPTION="Chrome OS Kernel-raspberrypi2-kms"
 KEYWORDS="arm"
 KERNEL="kernel7"
 
