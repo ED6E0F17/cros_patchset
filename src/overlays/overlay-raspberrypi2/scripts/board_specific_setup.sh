@@ -35,7 +35,7 @@ install_raspberrypi_bootloader() {
   info "Copying kernel and configuration files"
   sudo cp "${ROOT}/boot/cmdline.txt" "${efi_dir}/"
   sudo cp "${ROOT}/boot/config.txt" "${efi_dir}/"
-  sudo cp "${ROOT}/boot/zImage" "${efi_dir}/kernel.img"
+  sudo cp "${ROOT}/boot/dtImage" "${efi_dir}/kernel.img"
   sudo cp "${ROOT}/boot/bcm2709-rpi-2-b.dtb" "${efi_dir}/bcm2709-rpi-2-b.dtb"
 
   sudo umount "${efi_dir}"
