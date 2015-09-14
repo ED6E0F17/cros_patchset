@@ -19,6 +19,6 @@ SRC_URI="https://github.com/raspberrypi/firmware/archive/${FW_REV}.zip -> ${P}.z
 src_install() {
 	cd "firmware-master/boot"
 	insinto /firmware/rpi
-	doins fixup.dat start.elf bcm2709-rpi-2-b.dtb  bootcode.bin
+	doins fixup.dat start.elf bootcode.bin
 	doins -r overlays
 }

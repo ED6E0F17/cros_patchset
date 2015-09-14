@@ -26,4 +26,6 @@ src_install() {
 
 	insinto /boot
 	doins "${FILESDIR}"/{cmdline,config}.txt
+	# bcm2709-rpi-2-b.dtb is generated during kernel build.
+	doins "${FILESDIR}"/bcm2709-rpi-2-b.dtb
 }
