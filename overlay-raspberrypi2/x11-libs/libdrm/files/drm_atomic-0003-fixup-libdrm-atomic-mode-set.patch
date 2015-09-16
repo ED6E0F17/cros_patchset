@@ -1,0 +1,111 @@
+From a3f592b3577f887b754651d3281b1627916ea859 Mon Sep 17 00:00:00 2001
+From: Rob Clark <robclark@freedesktop.org>
+Date: Thu, 18 Dec 2014 15:17:50 -0500
+Subject: [PATCH 9/9] fixup! libdrm: atomic mode set
+
+---
+ include/drm/drm.h         | 13 ++++++++++---
+ include/drm/drm_mode.h    | 14 +++++++++++---
+ tests/modetest/modetest.c |  1 +
+ xf86drmMode.c             |  3 ++-
+ 4 files changed, 24 insertions(+), 7 deletions(-)
+
+diff --git a/include/drm/drm.h b/include/drm/drm.h
+index 768b7db..e22ffe2 100644
+--- a/include/drm/drm.h
++++ b/include/drm/drm.h
+@@ -630,10 +630,17 @@ struct drm_get_cap {
+ /**
+  * DRM_CLIENT_CAP_UNIVERSAL_PLANES
+  *
+- * if set to 1, the DRM core will expose the full universal plane list
+- * (including primary and cursor planes).
++ * If set to 1, the DRM core will expose all planes (overlay, primary, and
++ * cursor) to userspace.
+  */
+-#define DRM_CLIENT_CAP_UNIVERSAL_PLANES 2
++#define DRM_CLIENT_CAP_UNIVERSAL_PLANES  2
++
++/**
++ * DRM_CLIENT_CAP_ATOMIC
++ *
++ * If set to 1, the DRM core will expose atomic properties to userspace
++ */
++#define DRM_CLIENT_CAP_ATOMIC	3
+ 
+ /** DRM_IOCTL_SET_CLIENT_CAP ioctl argument type */
+ struct drm_set_client_cap {
+diff --git a/include/drm/drm_mode.h b/include/drm/drm_mode.h
+index 1c3f620..abe7a9c 100644
+--- a/include/drm/drm_mode.h
++++ b/include/drm/drm_mode.h
+@@ -259,6 +259,13 @@ struct drm_mode_get_connector {
+ #define DRM_MODE_PROP_OBJECT		DRM_MODE_PROP_TYPE(1)
+ #define DRM_MODE_PROP_SIGNED_RANGE	DRM_MODE_PROP_TYPE(2)
+ 
++/* the PROP_ATOMIC flag is used to hide properties from userspace that
++ * is not aware of atomic properties.  This is mostly to work around
++ * older userspace (DDX drivers) that read/write each prop they find,
++ * witout being aware that this could be triggering a lengthy modeset.
++ */
++#define DRM_MODE_PROP_ATOMIC        0x80000000
++
+ struct drm_mode_property_enum {
+ 	__u64 value;
+ 	char name[DRM_PROP_NAME_LEN];
+@@ -510,14 +517,15 @@ struct drm_mode_destroy_dumb {
+ /* page-flip flags are valid, plus: */
+ #define DRM_MODE_ATOMIC_TEST_ONLY 0x0100
+ #define DRM_MODE_ATOMIC_NONBLOCK  0x0200
++#define DRM_MODE_ATOMIC_ALLOW_MODESET 0x0400
+ 
+ #define DRM_MODE_ATOMIC_FLAGS (\
+ 		DRM_MODE_PAGE_FLIP_EVENT |\
+ 		DRM_MODE_PAGE_FLIP_ASYNC |\
+ 		DRM_MODE_ATOMIC_TEST_ONLY |\
+-		DRM_MODE_ATOMIC_NONBLOCK)
++		DRM_MODE_ATOMIC_NONBLOCK |\
++		DRM_MODE_ATOMIC_ALLOW_MODESET)
+ 
+-/* FIXME come up with some sane error reporting mechanism? */
+ struct drm_mode_atomic {
+ 	__u32 flags;
+ 	__u32 count_objs;
+@@ -525,7 +533,7 @@ struct drm_mode_atomic {
+ 	__u64 count_props_ptr;
+ 	__u64 props_ptr;
+ 	__u64 prop_values_ptr;
+-	__u64 blob_values_ptr;
++	__u64 reserved;
+ 	__u64 user_data;
+ };
+ 
+diff --git a/tests/modetest/modetest.c b/tests/modetest/modetest.c
+index 26758d4..8e8b56b 100644
+--- a/tests/modetest/modetest.c
++++ b/tests/modetest/modetest.c
+@@ -568,6 +568,7 @@ static struct resources *get_resources(struct device *dev)
+ 	memset(res, 0, sizeof *res);
+ 
+ 	drmSetClientCap(dev->fd, DRM_CLIENT_CAP_UNIVERSAL_PLANES, 1);
++	drmSetClientCap(dev->fd, DRM_CLIENT_CAP_ATOMIC, 1);
+ 
+ 	res->res = drmModeGetResources(dev->fd);
+ 	if (!res->res) {
+diff --git a/xf86drmMode.c b/xf86drmMode.c
+index d63f099..e205e1f 100644
+--- a/xf86drmMode.c
++++ b/xf86drmMode.c
+@@ -1403,7 +1403,8 @@ int drmModePropertySetCommit(int fd, uint32_t flags, void *user_data,
+ 	atomic.count_props_ptr = VOID2U64(count_props_ptr);
+ 	atomic.props_ptr = VOID2U64(props_ptr);
+ 	atomic.prop_values_ptr = VOID2U64(prop_values_ptr);
+-	atomic.blob_values_ptr = VOID2U64(blob_values_ptr);
++// TODO:
++//	atomic.blob_values_ptr = VOID2U64(blob_values_ptr);
+ 	atomic.user_data = VOID2U64(user_data);
+ 
+ 	ret = DRM_IOCTL(fd, DRM_IOCTL_MODE_ATOMIC, &atomic);
+-- 
+2.3.1
+

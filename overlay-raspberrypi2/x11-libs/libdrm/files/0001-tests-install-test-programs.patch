@@ -1,0 +1,32 @@
+From 0d803a35f2cdf57c6ada0d638cf50475e1c3d911 Mon Sep 17 00:00:00 2001
+From: Daniel Kurtz <djkurtz@chromium.org>
+Date: Mon, 9 Mar 2015 17:40:07 +0800
+Subject: [PATCH 1/9] tests: install test programs
+
+--enable-install-test-programs allows cross compiling test programs
+and installing them to $bindir.  This configure option propagates to
+Makefile.am as HAVE_INSTALL_TESTS.
+
+This was set for basic tests (modetest, etc.), but the tests/
+directory was missed.
+
+Signed-off-by: Daniel Kurtz <djkurtz@chromium.org>
+---
+ tests/Makefile.am | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/tests/Makefile.am b/tests/Makefile.am
+index 069285f..d9ab08a 100644
+--- a/tests/Makefile.am
++++ b/tests/Makefile.am
+@@ -68,3 +68,7 @@ TESTS +=					\
+ endif
+ 
+ check_PROGRAMS += $(TESTS)
++
++if HAVE_INSTALL_TESTS
++bin_PROGRAMS = ${TESTS}
++endif
+-- 
+2.3.1
+
