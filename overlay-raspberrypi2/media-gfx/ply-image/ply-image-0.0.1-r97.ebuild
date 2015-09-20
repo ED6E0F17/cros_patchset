@@ -23,7 +23,7 @@ DEPEND="media-libs/libpng
 RDEPEND="${DEPEND}"
 
 src_prepare() {
-	epatch ${FILESDIR}/vc4.patch
+	epatch ${FILESDIR}/*.patch
 }
 
 src_configure() {
