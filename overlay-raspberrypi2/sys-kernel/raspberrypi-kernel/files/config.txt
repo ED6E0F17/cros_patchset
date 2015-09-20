@@ -1,4 +1,4 @@
-force_hdmi_hotplug=1
+hdmi_drive=2
 #arm_freq=1000
 #core_freq=500
 #sdram_freq=500
