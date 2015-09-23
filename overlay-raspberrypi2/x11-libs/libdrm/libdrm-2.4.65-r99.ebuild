@@ -63,7 +63,7 @@ src_configure() {
 		$(use_enable video_cards_radeon radeon)
 		$(use_enable video_cards_vmware vmwgfx)
 		$(use_enable video_cards_rockchip rockchip-experimental-api)
-		$(use_enable vc4 vc4-experimental-api)
+		$(use_enable video_cards_vc4 vc4-experimental-api)
 		$(use_enable libkms)
 		$(use_enable manpages)
 		$(use_enable udev)
