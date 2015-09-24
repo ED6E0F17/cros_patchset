@@ -47,7 +47,7 @@ KEYWORDS="*"
 
 INTEL_CARDS="intel"
 RADEON_CARDS="radeon"
-VIDEO_CARDS="${INTEL_CARDS} ${RADEON_CARDS} mach64 mga nouveau r128 savage sis vmware tdfx via freedreno"
+VIDEO_CARDS="${INTEL_CARDS} ${RADEON_CARDS} vc4 mach64 mga nouveau r128 savage sis vmware tdfx via freedreno"
 for card in ${VIDEO_CARDS}; do
 	IUSE_VIDEO_CARDS+=" video_cards_${card}"
 done
@@ -198,6 +198,9 @@ src_configure() {
 
 		# Freedreno code
 		gallium_driver_enable video_cards_freedreno freedreno
+
+		# Videocore
+		gallium_driver_enable video_cards_vc4 vc4
 	fi
 
 	export LLVM_CONFIG=${SYSROOT}/usr/bin/llvm-config-host
@@ -267,7 +270,7 @@ src_install() {
 	insinto "/usr/$(get_libdir)/dri/"
 	insopts -m0755
 	# install the gallium drivers we use
-	local gallium_drivers_files=( i915_dri.so nouveau_dri.so r300_dri.so r600_dri.so msm_dri.so swrast_dri.so )
+	local gallium_drivers_files=( i915_dri.so nouveau_dri.so r300_dri.so r600_dri.so msm_dri.so swrast_dri.so vc4_dri.so )
 	for x in ${gallium_drivers_files[@]}; do
 		if [ -f "${S}/$(get_libdir)/gallium/${x}" ]; then
 			doins "${S}/$(get_libdir)/gallium/${x}"

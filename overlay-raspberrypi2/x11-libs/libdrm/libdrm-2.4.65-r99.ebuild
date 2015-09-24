@@ -45,6 +45,7 @@ XORG_EAUTORECONF=yes
 PATCHES=(
 	"${FILESDIR}"/add-vc4.patch
 	"${FILESDIR}"/drm_vgem-0001-add-vgem-ioctl-macro-definitions.patch
+	"${FILESDIR}"/drm_mediatek-0003-Add-DRM_FORMAT_MT12-for-Mediatek-Proprietary-video-blo.patch
 )
 
 src_prepare() {
