@@ -25,7 +25,7 @@ for card in ${VIDEO_CARDS}; do
 	IUSE_VIDEO_CARDS+=" video_cards_${card}"
 done
 
-IUSE="${IUSE_VIDEO_CARDS} drm_atomic libkms manpages +udev"
+IUSE="${IUSE_VIDEO_CARDS} libkms manpages +udev"
 REQUIRED_USE="video_cards_exynos? ( libkms )
 	video_cards_mediatek? ( libkms )
 	video_cards_vc4? ( libkms )
@@ -45,7 +45,7 @@ XORG_EAUTORECONF=yes
 PATCHES=(
 	"${FILESDIR}"/add-vc4.patch
 	"${FILESDIR}"/drm_vgem-0001-add-vgem-ioctl-macro-definitions.patch
-	"${FILESDIR}"/drm_mediatek-0003-Add-DRM_FORMAT_MT12-for-Mediatek-Proprietary-video-blo.patch
+	"${FILESDIR}"/drm_mediatek-0003-Add-Mediatek-proprietary-formats.patch
 )
 
 src_prepare() {

@@ -1,7 +1,7 @@
-From 3ee14f3bacc1d46deddce2caded4c0c6b1c16e2b Mon Sep 17 00:00:00 2001
+From a55153d15581578bb393b81586f3cb98943a4e50 Mon Sep 17 00:00:00 2001
 From: Daniel Kurtz <djkurtz@chromium.org>
 Date: Wed, 25 Mar 2015 11:55:40 -0700
-Subject: [PATCH 4/9] tests: add mediatek to modetest, kmstest, vbltest and
+Subject: [PATCH 4/6] tests: add mediatek to modetest, kmstest, vbltest and
  proptest
 
 There is a mediatek drm kms driver.
@@ -18,27 +18,27 @@ Signed-off-by: JB Tsai <jb.tsai@mediatek.com>
  4 files changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/tests/kmstest/main.c b/tests/kmstest/main.c
-index 7d50f5b..3ec2612 100644
+index 120bc0f..2baea95 100644
 --- a/tests/kmstest/main.c
 +++ b/tests/kmstest/main.c
-@@ -64,6 +64,7 @@ static const char *drivers[] = {
- 	"exynos",
+@@ -66,6 +66,7 @@ static const char *drivers[] = {
  	"imx-drm",
  	"rockchip",
+ 	"atmel-hlcdc",
 +	"mediatek",
  	NULL
  };
  
 diff --git a/tests/modetest/modetest.c b/tests/modetest/modetest.c
-index 7f0c1cc..26758d4 100644
+index 3b01918..a0b29e4 100644
 --- a/tests/modetest/modetest.c
 +++ b/tests/modetest/modetest.c
-@@ -1494,7 +1494,7 @@ int main(int argc, char **argv)
+@@ -1554,7 +1554,7 @@ int main(int argc, char **argv)
  	int drop_master = 0;
  	int test_vsync = 0;
  	int test_cursor = 0;
--	const char *modules[] = { "i915", "radeon", "nouveau", "vmwgfx", "omapdrm", "exynos", "tilcdc", "msm", "sti", "tegra", "imx-drm", "rockchip" };
-+	const char *modules[] = { "i915", "radeon", "nouveau", "vmwgfx", "omapdrm", "exynos", "tilcdc", "msm", "sti", "tegra", "imx-drm", "rockchip", "mediatek" };
+-	const char *modules[] = { "i915", "radeon", "nouveau", "vmwgfx", "omapdrm", "exynos", "tilcdc", "msm", "sti", "tegra", "imx-drm", "rockchip", "atmel-hlcdc" };
++	const char *modules[] = { "i915", "radeon", "nouveau", "vmwgfx", "omapdrm", "exynos", "tilcdc", "msm", "sti", "tegra", "imx-drm", "rockchip", "atmel-hlcdc", "mediatek" };
  	char *device = NULL;
  	char *module = NULL;
  	unsigned int i;
@@ -56,7 +56,7 @@ index b9296bd..d5bd1de 100644
  
  	for (i = 0; i < ARRAY_SIZE(modules); i++){
 diff --git a/tests/vbltest/vbltest.c b/tests/vbltest/vbltest.c
-index 4200adb..ca25a66 100644
+index e27f45c..cfc0026 100644
 --- a/tests/vbltest/vbltest.c
 +++ b/tests/vbltest/vbltest.c
 @@ -106,7 +106,7 @@ int main(int argc, char **argv)
@@ -64,10 +64,10 @@ index 4200adb..ca25a66 100644
  	unsigned i;
  	int c, fd, ret;
 -	const char *modules[] = { "i915", "radeon", "nouveau", "vmwgfx", "exynos", "omapdrm", "tilcdc", "msm", "tegra", "imx-drm" , "rockchip" };
-+	const char *modules[] = { "i915", "radeon", "nouveau", "vmwgfx", "exynos", "omapdrm", "tilcdc", "msm", "tegra", "imx-drm", "rockchip", "mediatek" };
++	const char *modules[] = { "i915", "radeon", "nouveau", "vmwgfx", "exynos", "omapdrm", "tilcdc", "msm", "tegra", "imx-drm" , "rockchip", "mediatek" };
  	drmVBlank vbl;
  	drmEventContext evctx;
  	struct vbl_info handler_info;
 -- 
-2.3.1
+2.1.2
 
