@@ -1,5 +1,6 @@
 ArmV7 Raspberry Pi2 ChromiumOS.
 
+26th Sep 2015: Chromium !
 16th Sep 2015: X needs to be SUID && !SUID
 13th Sep 2015: Building with Gallium.
 5th Sept 2015: Raspberry Pi Userspace is building.
