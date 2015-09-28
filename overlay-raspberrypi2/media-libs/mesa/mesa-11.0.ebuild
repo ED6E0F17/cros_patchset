@@ -47,7 +47,7 @@ KEYWORDS="*"
 
 INTEL_CARDS="intel"
 RADEON_CARDS="radeon"
-VIDEO_CARDS="${INTEL_CARDS} ${RADEON_CARDS} vc4 mach64 mga nouveau r128 savage sis vmware tdfx via freedreno"
+VIDEO_CARDS="${INTEL_CARDS} vc4"
 for card in ${VIDEO_CARDS}; do
 	IUSE_VIDEO_CARDS+=" video_cards_${card}"
 done
@@ -144,8 +144,6 @@ src_prepare() {
 	epatch "${FILESDIR}"/10.3-egl-dri2-report-EXT_image_dma_buf_import-extension.patch
 	epatch "${FILESDIR}"/10.3-egl-dri2-add-support-for-image-config-query.patch
 	epatch "${FILESDIR}"/10.3-egl-dri2-platform_drm-should-also-try-rende.patch
-	epatch "${FILESDIR}"/10.3-dri-add-swrast-support-on-top-of-prime-imported.patch
-	epatch "${FILESDIR}"/10.3-dri-in-swrast-use-render-nodes-and-custom-VGEM-dump-.patch
 	epatch "${FILESDIR}"/10.5-i915g-force-tile-x.patch
 	epatch "${FILESDIR}"/10.6-mesa-do-not-use-_glapi_new_nop_table-for-DRI-builds.patch	
 	epatch "${FILESDIR}"/10.6-i965-do-not-round-line-width-when-multisampling-or-a.patch
@@ -270,7 +268,7 @@ src_install() {
 	insinto "/usr/$(get_libdir)/dri/"
 	insopts -m0755
 	# install the gallium drivers we use
-	local gallium_drivers_files=( i915_dri.so nouveau_dri.so r300_dri.so r600_dri.so msm_dri.so swrast_dri.so vc4_dri.so )
+	local gallium_drivers_files=( swrast_dri.so vc4_dri.so )
 	for x in ${gallium_drivers_files[@]}; do
 		if [ -f "${S}/$(get_libdir)/gallium/${x}" ]; then
 			doins "${S}/$(get_libdir)/gallium/${x}"
