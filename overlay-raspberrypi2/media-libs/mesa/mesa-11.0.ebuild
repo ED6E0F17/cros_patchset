@@ -140,10 +140,7 @@ src_prepare() {
 	epatch "${FILESDIR}"/10.3-gbm-dlopen-libglapi-so-gbm_create_device-works.patch
 	epatch "${FILESDIR}"/10.3-i965-remove-read-only-restriction-of-imported-buffer.patch
 	epatch "${FILESDIR}"/10.3-egl-dri2-implement-platform_null.patch
-	epatch "${FILESDIR}"/10.3-egl-dri2-try-to-use-render-node-if-available.patch
 	epatch "${FILESDIR}"/10.3-egl-dri2-report-EXT_image_dma_buf_import-extension.patch
-	epatch "${FILESDIR}"/10.3-egl-dri2-add-support-for-image-config-query.patch
-	epatch "${FILESDIR}"/10.3-egl-dri2-platform_drm-should-also-try-rende.patch
 	epatch "${FILESDIR}"/10.5-i915g-force-tile-x.patch
 	epatch "${FILESDIR}"/10.6-mesa-do-not-use-_glapi_new_nop_table-for-DRI-builds.patch	
 	epatch "${FILESDIR}"/10.6-i965-do-not-round-line-width-when-multisampling-or-a.patch
