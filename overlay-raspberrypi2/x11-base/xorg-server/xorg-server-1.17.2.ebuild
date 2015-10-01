@@ -139,7 +139,7 @@ REQUIRED_USE="!minimal? (
 #)
 
 PATCHES=(
-	"${FILESDIR}"/need-suid.patch
+	"${FILESDIR}"/fix_options.patch
 	"${FILESDIR}"/1.9.3-chromeos-mode.patch
 )
 

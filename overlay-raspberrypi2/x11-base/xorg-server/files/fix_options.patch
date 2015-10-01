@@ -1,5 +1,5 @@
 diff --git a/hw/xfree86/common/xf86Init.c b/hw/xfree86/common/xf86Init.c
-index 017dcb6..c4879d8 100644
+index 017dcb6..4808f04 100644
 --- a/hw/xfree86/common/xf86Init.c
 +++ b/hw/xfree86/common/xf86Init.c
 @@ -1177,12 +1177,12 @@ ddxProcessArgument(int argc, char **argv, int i)
@@ -27,7 +27,7 @@ index 017dcb6..c4879d8 100644
              char *lf;
  
              CHECK_FOR_REQUIRED_ARGUMENT();
-@@ -1203,7 +1204,10 @@ ddxProcessArgument(int argc, char **argv, int i)
+@@ -1203,7 +1204,14 @@ ddxProcessArgument(int argc, char **argv, int i)
              xf86LogFile = lf;
              xf86LogFileFrom = X_CMDLINE;
              return 2;
@@ -36,6 +36,10 @@ index 017dcb6..c4879d8 100644
 +    if (!strcmp(argv[i], "-nohwaccess"))
 +    {
 +        return 1; // Root access is REQUIRED
++    }
++    if (!strcmp(argv[i], "-maxvt"))
++    {
++        return 2; // ignore that.
      }
      if (!strcmp(argv[i], "-config") || !strcmp(argv[i], "-xf86config")) {
          CHECK_FOR_REQUIRED_ARGUMENT();
