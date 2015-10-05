@@ -34,7 +34,7 @@ HOMEPAGE="http://mesa3d.sourceforge.net/"
 if [[ $PV = 9999* ]] || [[ -n ${CROS_WORKON_COMMIT} ]]; then
 	SRC_URI="${SRC_PATCHES}"
 else
-	SRC_URI="ftp://ftp.freedesktop.org/pub/mesa/11.0.0/mesa-11.0.0.tar.bz2
+	SRC_URI="ftp://ftp.freedesktop.org/pub/mesa/${FOLDER}/${MY_SRC_P}.tar.bz2
 		${SRC_PATCHES}"
 fi
 
@@ -47,7 +47,7 @@ KEYWORDS="*"
 
 INTEL_CARDS="intel"
 RADEON_CARDS="radeon"
-VIDEO_CARDS="${INTEL_CARDS} vc4"
+VIDEO_CARDS="${INTEL_CARDS} ${RADEON_CARDS} vc4 mach64 mga nouveau r128 savage sis vmware tdfx via freedreno"
 for card in ${VIDEO_CARDS}; do
 	IUSE_VIDEO_CARDS+=" video_cards_${card}"
 done
@@ -70,7 +70,8 @@ RDEPEND="
 		x11-libs/libXxf86vm
 	)
 	dev-libs/expat
-	sys-fs/udev
+	dev-libs/libgcrypt
+	virtual/udev
 	${LIBDRM_DEPSTRING}
 "
 
@@ -140,7 +141,12 @@ src_prepare() {
 	epatch "${FILESDIR}"/10.3-gbm-dlopen-libglapi-so-gbm_create_device-works.patch
 	epatch "${FILESDIR}"/10.3-i965-remove-read-only-restriction-of-imported-buffer.patch
 	epatch "${FILESDIR}"/10.3-egl-dri2-implement-platform_null.patch
+	epatch "${FILESDIR}"/10.3-egl-dri2-try-to-use-render-node-if-available.patch
 	epatch "${FILESDIR}"/10.3-egl-dri2-report-EXT_image_dma_buf_import-extension.patch
+	epatch "${FILESDIR}"/10.3-egl-dri2-add-support-for-image-config-query.patch
+	epatch "${FILESDIR}"/10.3-egl-dri2-platform_drm-should-also-try-rende.patch
+	epatch "${FILESDIR}"/10.3-dri-add-swrast-support-on-top-of-prime-imported.patch
+	epatch "${FILESDIR}"/10.3-dri-in-swrast-use-render-nodes-and-custom-VGEM-dump-.patch
 	epatch "${FILESDIR}"/10.5-i915g-force-tile-x.patch
 	epatch "${FILESDIR}"/10.6-mesa-do-not-use-_glapi_new_nop_table-for-DRI-builds.patch	
 	epatch "${FILESDIR}"/10.6-i965-do-not-round-line-width-when-multisampling-or-a.patch
@@ -148,7 +154,7 @@ src_prepare() {
 	epatch "${FILESDIR}"/10.6-mesa-teximage-use-correct-extension-for-accept-stenc.patch
 	epatch "${FILESDIR}"/10.6-i965-Momentarily-pretend-to-support-ARB_texture_sten.patch
 	epatch "${FILESDIR}"/10.6-Revert-i965-Advertise-a-line-width-of-40.0-on-Cherry.patch
-
+	epatch "${FILESDIR}"/10.6-i965-gen9-Use-custom-MOCS-entries-set-up-by.patch
 	base_src_prepare
 
 	eautoreconf
@@ -193,9 +199,8 @@ src_configure() {
 
 		# Freedreno code
 		gallium_driver_enable video_cards_freedreno freedreno
-
-		# Videocore
 		gallium_driver_enable video_cards_vc4 vc4
+
 	fi
 
 	export LLVM_CONFIG=${SYSROOT}/usr/bin/llvm-config-host
@@ -227,9 +232,9 @@ src_configure() {
 		$(use_enable !pic asm) \
 		$(use_enable xlib-glx) \
 		$(use_enable !xlib-glx dri) \
-		--with-dri-drivers=swrast \
+		--with-dri-drivers=${DRI_DRIVERS} \
 		--with-gallium-drivers=vc4 \
-		--with-egl-platforms=x11,drm
+		$(use egl && echo "--with-egl-platforms=null")
 }
 
 src_install() {
@@ -265,7 +270,7 @@ src_install() {
 	insinto "/usr/$(get_libdir)/dri/"
 	insopts -m0755
 	# install the gallium drivers we use
-	local gallium_drivers_files=( swrast_dri.so vc4_dri.so )
+	local gallium_drivers_files=( i915_dri.so nouveau_dri.so r300_dri.so r600_dri.so msm_dri.so swrast_dri.so )
 	for x in ${gallium_drivers_files[@]}; do
 		if [ -f "${S}/$(get_libdir)/gallium/${x}" ]; then
 			doins "${S}/$(get_libdir)/gallium/${x}"
