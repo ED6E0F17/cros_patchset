@@ -47,7 +47,7 @@ KEYWORDS="*"
 
 INTEL_CARDS="intel"
 RADEON_CARDS="radeon"
-VIDEO_CARDS="${INTEL_CARDS} ${RADEON_CARDS} vc4 mach64 mga nouveau r128 savage sis vmware tdfx via freedreno"
+VIDEO_CARDS="${INTEL_CARDS} ${RADEON_CARDS} mach64 mga nouveau r128 savage sis vmware tdfx via freedreno"
 for card in ${VIDEO_CARDS}; do
 	IUSE_VIDEO_CARDS+=" video_cards_${card}"
 done
@@ -70,8 +70,7 @@ RDEPEND="
 		x11-libs/libXxf86vm
 	)
 	dev-libs/expat
-	dev-libs/libgcrypt
-	virtual/udev
+	sys-fs/udev
 	${LIBDRM_DEPSTRING}
 "
 
@@ -154,7 +153,7 @@ src_prepare() {
 	epatch "${FILESDIR}"/10.6-mesa-teximage-use-correct-extension-for-accept-stenc.patch
 	epatch "${FILESDIR}"/10.6-i965-Momentarily-pretend-to-support-ARB_texture_sten.patch
 	epatch "${FILESDIR}"/10.6-Revert-i965-Advertise-a-line-width-of-40.0-on-Cherry.patch
-	epatch "${FILESDIR}"/10.6-i965-gen9-Use-custom-MOCS-entries-set-up-by.patch
+
 	base_src_prepare
 
 	eautoreconf
@@ -199,8 +198,6 @@ src_configure() {
 
 		# Freedreno code
 		gallium_driver_enable video_cards_freedreno freedreno
-		gallium_driver_enable video_cards_vc4 vc4
-
 	fi
 
 	export LLVM_CONFIG=${SYSROOT}/usr/bin/llvm-config-host
