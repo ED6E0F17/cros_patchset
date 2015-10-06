@@ -47,7 +47,7 @@ KEYWORDS="*"
 
 INTEL_CARDS="intel"
 RADEON_CARDS="radeon"
-VIDEO_CARDS="${INTEL_CARDS} ${RADEON_CARDS} mach64 mga nouveau r128 savage sis vmware tdfx via freedreno"
+VIDEO_CARDS="${INTEL_CARDS} ${RADEON_CARDS} vc4 mach64 mga nouveau r128 savage sis vmware tdfx via freedreno"
 for card in ${VIDEO_CARDS}; do
 	IUSE_VIDEO_CARDS+=" video_cards_${card}"
 done
@@ -198,6 +198,8 @@ src_configure() {
 
 		# Freedreno code
 		gallium_driver_enable video_cards_freedreno freedreno
+
+		gallium_driver_enable video_cards_vc4 vc4
 	fi
 
 	export LLVM_CONFIG=${SYSROOT}/usr/bin/llvm-config-host
@@ -231,7 +233,7 @@ src_configure() {
 		$(use_enable !xlib-glx dri) \
 		--with-dri-drivers=${DRI_DRIVERS} \
 		--with-gallium-drivers=vc4 \
-		$(use egl && echo "--with-egl-platforms=null")
+		$(use egl && echo "--with-egl-platforms=x11,drm")
 }
 
 src_install() {
