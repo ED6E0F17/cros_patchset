@@ -5,9 +5,9 @@ EAPI=4
 
 CROS_WORKON_REPO="git://github.com/anholt"
 CROS_WORKON_PROJECT="linux"
-CROS_WORKON_EGIT_BRANCH="vc4-kms-v3d-rpi2"
+Cc44b2355f19a9620a8ROS_WORKON_EGIT_BRANCH="vc4-kms-v3d-rpi2"
 CROS_WORKON_BLACKLIST="1"
-CROS_WORKON_COMMIT="9268e6bf7ba2a6832c0288555bf592a63614a754"
+CROS_WORKON_COMMIT="b8b2f50546513355fecd9ac44b2355f19a9620a8"
 
 # This must be inherited *after* EGIT/CROS_WORKON variables defined
 inherit git-2 cros-kernel2 cros-workon
