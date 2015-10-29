@@ -1,6 +1,6 @@
 # Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/x11-base/xorg-server/xorg-server-1.17.2.ebuild,v 1.1 2015/07/10 18:24:36 mrueg Exp $
+# $Id$
 
 EAPI=5
 
@@ -134,13 +134,12 @@ REQUIRED_USE="!minimal? (
 	)
 	xephyr? ( kdrive )"
 
-#UPSTREAMED_PATCHES=(
-#	"${WORKDIR}/patches/"
-#)
-
 PATCHES=(
 	"${FILESDIR}"/fix_options.patch
 	"${FILESDIR}"/1.9.3-chromeos-mode.patch
+	"${FILESDIR}"/${PN}-1.12-unloadsubmodule.patch
+	# needed for new eselect-opengl, bug #541232
+	"${FILESDIR}"/${PN}-1.17-support-multiple-Files-sections.patch
 )
 
 pkg_pretend() {
