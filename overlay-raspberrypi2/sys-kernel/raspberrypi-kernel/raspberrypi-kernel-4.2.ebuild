@@ -3,11 +3,11 @@
 
 EAPI=4
 
-CROS_WORKON_REPO="git://github.com/anholt"
+CROS_WORKON_REPO="git://github.com/raspberrypi"
 CROS_WORKON_PROJECT="linux"
-CROS_WORKON_EGIT_BRANCH="vc4-kms-v3d-rpi2"
+CROS_WORKON_EGIT_BRANCH="rpi-4.2.y"
 CROS_WORKON_BLACKLIST="1"
-CROS_WORKON_COMMIT="616d13363331c2afec1e8bf30a54c81f093266bd"
+CROS_WORKON_COMMIT="806e02221caec4ca42adc7aed42f5523bc8fb0dc"
 
 # This must be inherited *after* EGIT/CROS_WORKON variables defined
 inherit git-2 cros-kernel2 cros-workon
