@@ -89,14 +89,6 @@ RDEPEND="
 	llvm? ( !kernel_FreeBSD? (
 		>=sys-devel/llvm-3.4.2:=[${MULTILIB_USEDEP}]
 	) )
-	opencl? (
-				app-eselect/eselect-opencl
-				dev-libs/libclc
-				!kernel_FreeBSD?  ( || (
-					>=dev-libs/elfutils-0.155-r1:=[${MULTILIB_USEDEP}]
-					>=dev-libs/libelf-0.8.13-r2:=[${MULTILIB_USEDEP}]
-				) )
-			)
 	openmax? ( >=media-libs/libomxil-bellagio-0.9.3:=[${MULTILIB_USEDEP}] )
 	vaapi? ( >=x11-libs/libva-0.35.0:=[${MULTILIB_USEDEP}] )
 	vdpau? ( >=x11-libs/libvdpau-1.1:=[${MULTILIB_USEDEP}] )
@@ -208,14 +200,6 @@ multilib_src_configure() {
 		gallium_enable video_cards_vc4 vc4
 
 		export LLVM_CONFIG=${SYSROOT}/usr/bin/llvm-config-host
-
-		# opencl stuff
-		if use opencl; then
-			myconf+="
-				$(use_enable opencl)
-				--with-clang-libdir="${EPREFIX}/usr/lib"
-				"
-		fi
 	fi
 
 	# x86 hardened pax_kernel needs glx-rts, bug 240956
@@ -242,6 +226,7 @@ multilib_src_configure() {
 		$(use_enable d3d9 nine) \
 		$(use_enable debug) \
 		--disable-dri3 \
+		--disable-opencl \
 		$(use_enable egl) \
 		$(use_enable gbm) \
 		$(use_enable gles1) \
@@ -250,6 +235,7 @@ multilib_src_configure() {
 		$(use_enable osmesa) \
 		$(use_enable !udev sysfs) \
 		--disable-llvm-shared-libs \
+		--with-sha1=libgcrypt \
 		--with-dri-drivers=swrast \
 		--with-gallium-drivers=vc4 \
 		PYTHON2="${PYTHON}" \
@@ -288,20 +274,6 @@ multilib_src_install() {
 				fi
 			done
 			popd
-		eend $?
-	fi
-	if use opencl; then
-		ebegin "Moving Gallium/Clover OpenCL implementation for dynamic switching"
-		local cl_dir="/usr/$(get_libdir)/OpenCL/vendors/mesa"
-		dodir ${cl_dir}/{lib,include}
-		if [ -f "${ED}/usr/$(get_libdir)/libOpenCL.so" ]; then
-			mv -f "${ED}"/usr/$(get_libdir)/libOpenCL.so* \
-			"${ED}"${cl_dir}
-		fi
-		if [ -f "${ED}/usr/include/CL/opencl.h" ]; then
-			mv -f "${ED}"/usr/include/CL \
-			"${ED}"${cl_dir}/include
-		fi
 		eend $?
 	fi
 
@@ -344,11 +316,6 @@ pkg_postinst() {
 	# Select classic/gallium drivers
 	if use classic || use gallium; then
 		eselect mesa set --auto
-	fi
-
-	# Switch to mesa opencl
-	if use opencl; then
-		eselect opencl set --use-old ${PN}
 	fi
 
 	# run omxregister-bellagio to make the OpenMAX drivers known system-wide
