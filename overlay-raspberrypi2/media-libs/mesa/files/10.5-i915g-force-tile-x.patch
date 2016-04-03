@@ -1,7 +1,7 @@
-From 23ce2b333e47305775d40441f99b06fb7e096990 Mon Sep 17 00:00:00 2001
+From eacd9880542485aeb47f9dd4cb0d8fdd0d1a5619 Mon Sep 17 00:00:00 2001
 From: Haixia Shi <hshi@chromium.org>
 Date: Wed, 22 Apr 2015 11:09:01 -0700
-Subject: [PATCH 27/27] i915g: force tile-x
+Subject: [PATCH 24/24] i915g: force tile-x
 
 Change-Id: I6bb9eb6477c84e186ad3482197c400a201a3ecd7
 ---
@@ -9,7 +9,7 @@ Change-Id: I6bb9eb6477c84e186ad3482197c400a201a3ecd7
  1 file changed, 1 insertion(+), 7 deletions(-)
 
 diff --git a/src/gallium/drivers/i915/i915_resource_texture.c b/src/gallium/drivers/i915/i915_resource_texture.c
-index dc8f4d1c9..f07e794 100644
+index 9a3279ccb755..bd0c67b37ffa 100644
 --- a/src/gallium/drivers/i915/i915_resource_texture.c
 +++ b/src/gallium/drivers/i915/i915_resource_texture.c
 @@ -181,13 +181,7 @@ i915_texture_tiling(struct i915_screen *is, struct i915_texture *tex)
@@ -28,5 +28,5 @@ index dc8f4d1c9..f07e794 100644
  
  
 -- 
-2.3.1
+2.5.1
 

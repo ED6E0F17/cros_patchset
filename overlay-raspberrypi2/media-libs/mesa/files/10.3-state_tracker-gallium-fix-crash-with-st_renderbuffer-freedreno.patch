@@ -1,10 +1,10 @@
-From 2b49cc5db5b80285d0872cd8120aa95bee12f9a5 Mon Sep 17 00:00:00 2001
+From 57c09646d2be2d1e333789706f19e2ebc10923f2 Mon Sep 17 00:00:00 2001
 From: Rob Clark <robclark@freedesktop.org>
-Date: Fri, 29 Aug 2014 17:09:29 -0400
-Subject: [PATCH 04/27] CHROMIUM:
+Date: Mon, 7 Mar 2016 18:19:11 -0800
+Subject: [PATCH] CHROMIUM:
  10.3-state_tracker-gallium-fix-crash-with-st_renderbuffer-freedreno.patch
 
-Change-Id: I0c50926eab9e4fc0d00cc6c78a4e88f46555e37c
+Change-Id: I8ca2cc1e8309819160a188297656c0e80cb98486
 ---
  src/gallium/drivers/freedreno/a2xx/fd2_texture.c  | 1 +
  src/gallium/drivers/freedreno/a3xx/fd3_texture.c  | 1 +
@@ -15,10 +15,10 @@ Change-Id: I0c50926eab9e4fc0d00cc6c78a4e88f46555e37c
  6 files changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/src/gallium/drivers/freedreno/a2xx/fd2_texture.c b/src/gallium/drivers/freedreno/a2xx/fd2_texture.c
-index 90013e2..0a4cc56 100644
+index 6e4b5a5..8e7abf9 100644
 --- a/src/gallium/drivers/freedreno/a2xx/fd2_texture.c
 +++ b/src/gallium/drivers/freedreno/a2xx/fd2_texture.c
-@@ -135,6 +135,7 @@ fd2_sampler_view_create(struct pipe_context *pctx, struct pipe_resource *prsc,
+@@ -138,6 +138,7 @@ fd2_sampler_view_create(struct pipe_context *pctx, struct pipe_resource *prsc,
  	so->base.texture = prsc;
  	so->base.reference.count = 1;
  	so->base.context = pctx;
@@ -27,10 +27,10 @@ index 90013e2..0a4cc56 100644
  	so->fmt = fd2_pipe2surface(cso->format);
  
 diff --git a/src/gallium/drivers/freedreno/a3xx/fd3_texture.c b/src/gallium/drivers/freedreno/a3xx/fd3_texture.c
-index 6f44ee3..8561f93 100644
+index 9d54d41..355eed8 100644
 --- a/src/gallium/drivers/freedreno/a3xx/fd3_texture.c
 +++ b/src/gallium/drivers/freedreno/a3xx/fd3_texture.c
-@@ -222,6 +222,7 @@ fd3_sampler_view_create(struct pipe_context *pctx, struct pipe_resource *prsc,
+@@ -225,6 +225,7 @@ fd3_sampler_view_create(struct pipe_context *pctx, struct pipe_resource *prsc,
  	so->base.texture = prsc;
  	so->base.reference.count = 1;
  	so->base.context = pctx;
@@ -39,31 +39,31 @@ index 6f44ee3..8561f93 100644
  	so->texconst0 =
  			A3XX_TEX_CONST_0_TYPE(tex_type(prsc->target)) |
 diff --git a/src/gallium/drivers/freedreno/a4xx/fd4_texture.c b/src/gallium/drivers/freedreno/a4xx/fd4_texture.c
-index f2cc33b..c52197a 100644
+index 3834858..b11d510 100644
 --- a/src/gallium/drivers/freedreno/a4xx/fd4_texture.c
 +++ b/src/gallium/drivers/freedreno/a4xx/fd4_texture.c
-@@ -161,6 +161,7 @@ fd4_sampler_view_create(struct pipe_context *pctx, struct pipe_resource *prsc,
+@@ -226,6 +226,7 @@ fd4_sampler_view_create(struct pipe_context *pctx, struct pipe_resource *prsc,
  	so->base.texture = prsc;
  	so->base.reference.count = 1;
  	so->base.context = pctx;
 +	so->base.sampler_view_destroy = fd_sampler_view_destroy;
  
  	so->texconst0 =
- 		A4XX_TEX_CONST_0_TYPE(tex_type(prsc->target)) |
+ 		A4XX_TEX_CONST_0_TYPE(tex_type(cso->target)) |
 diff --git a/src/gallium/drivers/freedreno/freedreno_surface.c b/src/gallium/drivers/freedreno/freedreno_surface.c
-index 250fe4b..a16f13c 100644
+index 9043393..3efa1b6 100644
 --- a/src/gallium/drivers/freedreno/freedreno_surface.c
 +++ b/src/gallium/drivers/freedreno/freedreno_surface.c
-@@ -51,6 +51,7 @@ fd_create_surface(struct pipe_context *pctx,
- 		pipe_resource_reference(&psurf->texture, ptex);
+@@ -54,6 +54,7 @@ fd_create_surface(struct pipe_context *pctx,
+ 	pipe_resource_reference(&psurf->texture, ptex);
  
- 		psurf->context = pctx;
-+		psurf->surface_destroy = fd_surface_destroy;
- 		psurf->format = surf_tmpl->format;
- 		psurf->width = u_minify(ptex->width0, level);
- 		psurf->height = u_minify(ptex->height0, level);
+ 	psurf->context = pctx;
++	psurf->surface_destroy = fd_surface_destroy;
+ 	psurf->format = surf_tmpl->format;
+ 	psurf->width = u_minify(ptex->width0, level);
+ 	psurf->height = u_minify(ptex->height0, level);
 diff --git a/src/gallium/drivers/freedreno/freedreno_texture.c b/src/gallium/drivers/freedreno/freedreno_texture.c
-index eaa6629..40095b4 100644
+index f5611ab..4c2995f 100644
 --- a/src/gallium/drivers/freedreno/freedreno_texture.c
 +++ b/src/gallium/drivers/freedreno/freedreno_texture.c
 @@ -41,7 +41,7 @@ fd_sampler_state_delete(struct pipe_context *pctx, void *hwcso)
@@ -76,7 +76,7 @@ index eaa6629..40095b4 100644
  		struct pipe_sampler_view *view)
  {
 diff --git a/src/gallium/drivers/freedreno/freedreno_texture.h b/src/gallium/drivers/freedreno/freedreno_texture.h
-index 43571a9..a1007d1 100644
+index fa27d1c..f296cb1 100644
 --- a/src/gallium/drivers/freedreno/freedreno_texture.h
 +++ b/src/gallium/drivers/freedreno/freedreno_texture.h
 @@ -39,6 +39,9 @@ void fd_set_sampler_views(struct pipe_context *pctx, unsigned shader,
@@ -88,7 +88,7 @@ index 43571a9..a1007d1 100644
 +
  void fd_texture_init(struct pipe_context *pctx);
  
- #endif /* FREEDRENO_TEXTURE_H_ */
+ struct fd_texture_stateobj;
 -- 
-2.3.1
+2.7.0.rc3.207.g0ac5344
 

@@ -1,7 +1,7 @@
-From f0aee913e172d441540368deacb4e4bc35fbe3bd Mon Sep 17 00:00:00 2001
+From 9d7f14fe76bfc1a502a633f2971236548e2a3d3c Mon Sep 17 00:00:00 2001
 From: Frank Henigman <fjhenigman@chromium.org>
 Date: Wed, 28 May 2014 20:24:47 -0700
-Subject: [PATCH 10/27] draw: cache LLVM compilation
+Subject: [PATCH 10/24] draw: cache LLVM compilation
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -20,7 +20,7 @@ Signed-off-by: Stéphane Marchesin <marcheu@chromium.org>
  2 files changed, 137 insertions(+), 4 deletions(-)
 
 diff --git a/src/gallium/auxiliary/draw/draw_llvm.c b/src/gallium/auxiliary/draw/draw_llvm.c
-index 0ca9665..18bd13c 100644
+index 63adbdf1c38f..cf4accfb8825 100644
 --- a/src/gallium/auxiliary/draw/draw_llvm.c
 +++ b/src/gallium/auxiliary/draw/draw_llvm.c
 @@ -50,7 +50,10 @@
@@ -51,7 +51,7 @@ index 0ca9665..18bd13c 100644
  static void
  draw_llvm_generate(struct draw_llvm *llvm, struct draw_llvm_variant *var,
                     boolean elts);
-@@ -530,8 +543,108 @@ draw_llvm_destroy(struct draw_llvm *llvm)
+@@ -534,8 +547,108 @@ draw_llvm_destroy(struct draw_llvm *llvm)
  }
  
  
@@ -161,8 +161,8 @@ index 0ca9665..18bd13c 100644
  {
     struct llvm_cache_item *item;
     LLVMTypeRef vertex_header;
-@@ -539,8 +652,10 @@ llvm_cache_item_create(struct draw_llvm_variant *variant, unsigned num_inputs)
-    struct draw_llvm *llvm = variant->llvm; 
+@@ -543,8 +656,10 @@ llvm_cache_item_create(struct draw_llvm_variant *variant, unsigned num_inputs)
+    struct draw_llvm *llvm = variant->llvm;
  
     item = MALLOC(sizeof *item);
 -   if (item == NULL)
@@ -173,7 +173,7 @@ index 0ca9665..18bd13c 100644
  
     variant->llvm_item = item;
  
-@@ -568,6 +683,8 @@ llvm_cache_item_create(struct draw_llvm_variant *variant, unsigned num_inputs)
+@@ -572,6 +687,8 @@ llvm_cache_item_create(struct draw_llvm_variant *variant, unsigned num_inputs)
  
     gallivm_free_ir(variant->llvm_item->gallivm);
  
@@ -182,7 +182,7 @@ index 0ca9665..18bd13c 100644
     return item;
  }
  
-@@ -600,7 +717,7 @@ draw_llvm_create_variant(struct draw_llvm *llvm,
+@@ -604,7 +721,7 @@ draw_llvm_create_variant(struct draw_llvm *llvm,
        draw_llvm_dump_variant_key(&variant->key);
     }
  
@@ -191,7 +191,7 @@ index 0ca9665..18bd13c 100644
     if (variant->llvm_item == NULL) {
        FREE(variant);
        return NULL;
-@@ -2016,13 +2133,14 @@ llvm_cache_item_destroy(struct llvm_cache_item *item)
+@@ -2020,13 +2137,14 @@ llvm_cache_item_destroy(struct llvm_cache_item *item)
  {
     gallivm_destroy(item->gallivm);
     FREE(item->gallivm);
@@ -208,10 +208,10 @@ index 0ca9665..18bd13c 100644
     remove_from_list(&variant->list_item_local);
     variant->shader->variants_cached--;
 diff --git a/src/gallium/auxiliary/draw/draw_llvm.h b/src/gallium/auxiliary/draw/draw_llvm.h
-index 5797326..86772c5 100644
+index 9936aab7426e..8e0033e8fe73 100644
 --- a/src/gallium/auxiliary/draw/draw_llvm.h
 +++ b/src/gallium/auxiliary/draw/draw_llvm.h
-@@ -388,12 +388,27 @@ struct draw_gs_llvm_variant_list_item
+@@ -389,12 +389,27 @@ struct draw_gs_llvm_variant_list_item
  };
  
  
@@ -240,5 +240,5 @@ index 5797326..86772c5 100644
  
  struct draw_llvm_variant
 -- 
-2.3.1
+2.5.1
 

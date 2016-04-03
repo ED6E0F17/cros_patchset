@@ -1,7 +1,7 @@
-From 43ffc1ec4980c0feca9a4de3896b56c9996e6442 Mon Sep 17 00:00:00 2001
+From 59365ccc4e374e318efac218f96a65203433637e Mon Sep 17 00:00:00 2001
 From: Frank Henigman <fjhenigman@chromium.org>
 Date: Wed, 28 May 2014 20:23:01 -0700
-Subject: [PATCH 09/27] draw: Move llvm stuff to be cached to new struct.
+Subject: [PATCH 09/24] draw: Move llvm stuff to be cached to new struct.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -22,10 +22,10 @@ Conflicts:
  3 files changed, 74 insertions(+), 42 deletions(-)
 
 diff --git a/src/gallium/auxiliary/draw/draw_llvm.c b/src/gallium/auxiliary/draw/draw_llvm.c
-index 7150611..0ca9665 100644
+index b1e1bcbee044..63adbdf1c38f 100644
 --- a/src/gallium/auxiliary/draw/draw_llvm.c
 +++ b/src/gallium/auxiliary/draw/draw_llvm.c
-@@ -422,7 +422,7 @@ create_jit_vertex_header(struct gallivm_state *gallivm, int data_elems)
+@@ -426,7 +426,7 @@ create_jit_vertex_header(struct gallivm_state *gallivm, int data_elems)
  static void
  create_jit_types(struct draw_llvm_variant *variant)
  {
@@ -34,7 +34,7 @@ index 7150611..0ca9665 100644
     LLVMTypeRef texture_type, sampler_type, context_type, buffer_type,
        vb_type;
  
-@@ -530,6 +530,48 @@ draw_llvm_destroy(struct draw_llvm *llvm)
+@@ -534,6 +534,48 @@ draw_llvm_destroy(struct draw_llvm *llvm)
  }
  
  
@@ -83,7 +83,7 @@ index 7150611..0ca9665 100644
  /**
   * Create LLVM-generated code for a vertex shader.
   */
-@@ -541,8 +583,6 @@ draw_llvm_create_variant(struct draw_llvm *llvm,
+@@ -545,8 +587,6 @@ draw_llvm_create_variant(struct draw_llvm *llvm,
     struct draw_llvm_variant *variant;
     struct llvm_vertex_shader *shader =
        llvm_vertex_shader(llvm->draw->vs.vertex_shader);
@@ -92,7 +92,7 @@ index 7150611..0ca9665 100644
  
     variant = MALLOC(sizeof *variant +
                      shader->variant_key_size -
-@@ -553,13 +593,6 @@ draw_llvm_create_variant(struct draw_llvm *llvm,
+@@ -557,13 +597,6 @@ draw_llvm_create_variant(struct draw_llvm *llvm,
     variant->llvm = llvm;
     variant->shader = shader;
  
@@ -106,7 +106,7 @@ index 7150611..0ca9665 100644
     memcpy(&variant->key, key, shader->variant_key_size);
  
     if (gallivm_debug & (GALLIVM_DEBUG_TGSI | GALLIVM_DEBUG_IR)) {
-@@ -567,27 +600,15 @@ draw_llvm_create_variant(struct draw_llvm *llvm,
+@@ -571,27 +604,15 @@ draw_llvm_create_variant(struct draw_llvm *llvm,
        draw_llvm_dump_variant_key(&variant->key);
     }
  
@@ -139,7 +139,7 @@ index 7150611..0ca9665 100644
  
     return variant;
  }
-@@ -607,11 +628,11 @@ generate_vs(struct draw_llvm_variant *variant,
+@@ -611,11 +632,11 @@ generate_vs(struct draw_llvm_variant *variant,
     struct draw_llvm *llvm = variant->llvm;
     const struct tgsi_token *tokens = llvm->draw->vs.vertex_shader->state.tokens;
     LLVMValueRef consts_ptr =
@@ -154,7 +154,7 @@ index 7150611..0ca9665 100644
                       tokens,
                       vs_type,
                       NULL /*struct lp_build_mask_context *mask*/,
-@@ -630,7 +651,7 @@ generate_vs(struct draw_llvm_variant *variant,
+@@ -634,7 +655,7 @@ generate_vs(struct draw_llvm_variant *variant,
        unsigned chan, attrib;
        struct lp_build_context bld;
        struct tgsi_shader_info* info = &llvm->draw->vs.vertex_shader->info;
@@ -163,7 +163,7 @@ index 7150611..0ca9665 100644
  
        for (attrib = 0; attrib < info->num_outputs; ++attrib) {
           for (chan = 0; chan < TGSI_NUM_CHANNELS; ++chan) {
-@@ -1076,7 +1097,7 @@ generate_viewport(struct draw_llvm_variant *variant,
+@@ -1080,7 +1101,7 @@ generate_viewport(struct draw_llvm_variant *variant,
                    LLVMValueRef context_ptr)
  {
     int i;
@@ -172,7 +172,7 @@ index 7150611..0ca9665 100644
     struct lp_type f32_type = vs_type;
     const unsigned pos = variant->llvm->draw->vs.position_output;
     LLVMTypeRef vs_type_llvm = lp_build_vec_type(gallivm, vs_type);
-@@ -1490,7 +1511,7 @@ static void
+@@ -1494,7 +1515,7 @@ static void
  draw_llvm_generate(struct draw_llvm *llvm, struct draw_llvm_variant *variant,
                     boolean elts)
  {
@@ -181,7 +181,7 @@ index 7150611..0ca9665 100644
     LLVMContextRef context = gallivm->context;
     LLVMTypeRef int32_type = LLVMInt32TypeInContext(context);
     LLVMTypeRef arg_types[11];
-@@ -1990,18 +2011,23 @@ draw_llvm_set_sampler_state(struct draw_context *draw,
+@@ -1994,18 +2015,23 @@ draw_llvm_set_sampler_state(struct draw_context *draw,
     }
  }
  
@@ -210,10 +210,10 @@ index 7150611..0ca9665 100644
  }
  
 diff --git a/src/gallium/auxiliary/draw/draw_llvm.h b/src/gallium/auxiliary/draw/draw_llvm.h
-index 9565fc6..5797326 100644
+index d153c166ead3..9936aab7426e 100644
 --- a/src/gallium/auxiliary/draw/draw_llvm.h
 +++ b/src/gallium/auxiliary/draw/draw_llvm.h
-@@ -388,10 +388,18 @@ struct draw_gs_llvm_variant_list_item
+@@ -389,10 +389,18 @@ struct draw_gs_llvm_variant_list_item
  };
  
  
@@ -233,7 +233,7 @@ index 9565fc6..5797326 100644
     /* LLVM JIT builder types */
     LLVMTypeRef context_ptr_type;
     LLVMTypeRef buffer_ptr_type;
-@@ -400,8 +408,6 @@ struct draw_llvm_variant
+@@ -401,8 +409,6 @@ struct draw_llvm_variant
  
     LLVMValueRef function;
     LLVMValueRef function_elts;
@@ -243,7 +243,7 @@ index 9565fc6..5797326 100644
     struct llvm_vertex_shader *shader;
  
 diff --git a/src/gallium/auxiliary/draw/draw_pt_fetch_shade_pipeline_llvm.c b/src/gallium/auxiliary/draw/draw_pt_fetch_shade_pipeline_llvm.c
-index d17d695..67c5de2 100644
+index e42c4af0e707..639b5db810c7 100644
 --- a/src/gallium/auxiliary/draw/draw_pt_fetch_shade_pipeline_llvm.c
 +++ b/src/gallium/auxiliary/draw/draw_pt_fetch_shade_pipeline_llvm.c
 @@ -374,7 +374,7 @@ llvm_pipeline_generic(struct draw_pt_middle_end *middle,
@@ -265,5 +265,5 @@ index d17d695..67c5de2 100644
                                              draw->pt.user.vbuffer,
                                              fetch_info->elts,
 -- 
-2.3.1
+2.5.1
 

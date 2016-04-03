@@ -1,26 +1,26 @@
-From 1b06d18cecebe99839b02658f25f1d6d7cf79f0c Mon Sep 17 00:00:00 2001
+From f0871ef8f7a9a3c283f052f88462c4d851f1bf6e Mon Sep 17 00:00:00 2001
 From: Zach Reizner <zachr@chromium.org>
-Date: Fri, 23 Jan 2015 10:43:26 -0800
-Subject: [PATCH 25/27] dri: add swrast support on top of prime imported
+Date: Mon, 7 Mar 2016 22:53:15 -0800
+Subject: [PATCH] CHROMIUM: dri: add swrast support on top of prime imported
  buffers
 
 TEST=null_platform_test /dev/dri/card0
 BUG=chromium:394868
 CQ-DEPEND=CL:242570
 
-Change-Id: I89cc8b4ba8e7120a1a1e7ed8b76c34632488aa88
+Change-Id: Iea5c0d2c97ae99f3219fc4efb353f185ff86fc3c
 ---
  src/gallium/state_trackers/dri/Makefile.am |   1 +
- src/gallium/state_trackers/dri/drisw.c     | 126 +++++++++++++++++
+ src/gallium/state_trackers/dri/drisw.c     | 127 +++++++++++++++++
  src/gallium/winsys/sw/dri/Makefile.am      |   5 +
- src/gallium/winsys/sw/dri/dri_sw_winsys.c  | 220 +++++++++++++++++++++++++++--
- 4 files changed, 337 insertions(+), 15 deletions(-)
+ src/gallium/winsys/sw/dri/dri_sw_winsys.c  | 220 ++++++++++++++++++++++++++---
+ 4 files changed, 337 insertions(+), 16 deletions(-)
 
 diff --git a/src/gallium/state_trackers/dri/Makefile.am b/src/gallium/state_trackers/dri/Makefile.am
-index d2c7a82..a4041e8 100644
+index 74bccaa..d7cf34b 100644
 --- a/src/gallium/state_trackers/dri/Makefile.am
 +++ b/src/gallium/state_trackers/dri/Makefile.am
-@@ -30,6 +30,7 @@ AM_CPPFLAGS = \
+@@ -28,6 +28,7 @@ AM_CPPFLAGS = \
  	-I$(top_srcdir)/include \
  	-I$(top_srcdir)/src/mapi \
  	-I$(top_srcdir)/src/mesa \
@@ -29,10 +29,10 @@ index d2c7a82..a4041e8 100644
  	-I$(top_builddir)/src/mesa/drivers/dri/common \
  	$(GALLIUM_CFLAGS) \
 diff --git a/src/gallium/state_trackers/dri/drisw.c b/src/gallium/state_trackers/dri/drisw.c
-index 5f69a2d..9738e44 100644
+index b85a73c..e5f59ae 100644
 --- a/src/gallium/state_trackers/dri/drisw.c
 +++ b/src/gallium/state_trackers/dri/drisw.c
-@@ -47,6 +47,8 @@
+@@ -48,6 +48,8 @@
  #include "dri_drawable.h"
  #include "dri_query_renderer.h"
  
@@ -41,7 +41,7 @@ index 5f69a2d..9738e44 100644
  DEBUG_GET_ONCE_BOOL_OPTION(swrast_no_present, "SWRAST_NO_PRESENT", FALSE);
  static boolean swrast_no_present = FALSE;
  
-@@ -326,6 +328,125 @@ drisw_update_tex_buffer(struct dri_drawable *drawable,
+@@ -361,6 +363,126 @@ drisw_update_tex_buffer(struct dri_drawable *drawable,
     pipe_transfer_unmap(pipe, transfer);
  }
  
@@ -130,7 +130,8 @@ index 5f69a2d..9738e44 100644
 +      return NULL;
 +   }
 +
-+   img->texture = ps->resource_from_handle(ps, &templat, &handle);
++   img->texture = ps->resource_from_handle(ps, &templat, &handle,
++                                           PIPE_HANDLE_USAGE_READ_WRITE);
 +
 +   if (!img->texture) {
 +      FREE(img);
@@ -167,17 +168,17 @@ index 5f69a2d..9738e44 100644
  /*
   * Backend function for init_screen.
   */
-@@ -333,6 +454,9 @@ drisw_update_tex_buffer(struct dri_drawable *drawable,
- static const __DRIextension *drisw_screen_extensions[] = {
+@@ -369,6 +491,9 @@ static const __DRIextension *drisw_screen_extensions[] = {
     &driTexBufferExtension.base,
     &dri2RendererQueryExtension.base,
+    &dri2ConfigQueryExtension.base,
 +#ifdef HAVE_LIBDRM
 +   &dri2ImageExtension.base,
 +#endif
     NULL
  };
  
-@@ -367,6 +491,8 @@ drisw_init_screen(__DRIscreen * sPriv)
+@@ -407,6 +532,8 @@ drisw_init_screen(__DRIscreen * sPriv)
     if (!configs)
        goto fail;
  
@@ -205,7 +206,7 @@ index a7d3253..a0fe9d3 100644
  
  libswdri_la_SOURCES = $(C_SOURCES)
 diff --git a/src/gallium/winsys/sw/dri/dri_sw_winsys.c b/src/gallium/winsys/sw/dri/dri_sw_winsys.c
-index 6fed22b..4e8b4cb 100644
+index 5c98f26..3c23699 100644
 --- a/src/gallium/winsys/sw/dri/dri_sw_winsys.c
 +++ b/src/gallium/winsys/sw/dri/dri_sw_winsys.c
 @@ -26,6 +26,17 @@
@@ -226,11 +227,12 @@ index 6fed22b..4e8b4cb 100644
  #include "pipe/p_compiler.h"
  #include "pipe/p_format.h"
  #include "util/u_inlines.h"
-@@ -36,14 +47,25 @@
+@@ -36,14 +47,26 @@
  #include "state_tracker/sw_winsys.h"
  #include "dri_sw_winsys.h"
  
 +#include "drm_driver.h"
++
 +
 +enum displaytarget_type {
 +   DISPLAYTARGET_TYPE_USER,
@@ -249,10 +251,10 @@ index 6fed22b..4e8b4cb 100644
 +   uint32_t vgem_handle;
 +#endif
 +
+    unsigned map_flags;
     void *data;
     void *mapped;
- };
-@@ -53,8 +75,75 @@ struct dri_sw_winsys
+@@ -55,8 +78,75 @@ struct dri_sw_winsys
     struct sw_winsys base;
  
     struct drisw_loader_funcs *lf;
@@ -325,10 +327,10 @@ index 6fed22b..4e8b4cb 100644
 +
 +#endif
 +
- static INLINE struct dri_sw_displaytarget *
+ static inline struct dri_sw_displaytarget *
  dri_sw_displaytarget( struct sw_displaytarget *dt )
  {
-@@ -92,6 +181,7 @@ dri_sw_displaytarget_create(struct sw_winsys *winsys,
+@@ -95,6 +185,7 @@ dri_sw_displaytarget_create(struct sw_winsys *winsys,
     if(!dri_sw_dt)
        goto no_dt;
  
@@ -336,7 +338,7 @@ index 6fed22b..4e8b4cb 100644
     dri_sw_dt->format = format;
     dri_sw_dt->width = width;
     dri_sw_dt->height = height;
-@@ -115,25 +205,30 @@ no_dt:
+@@ -119,30 +210,33 @@ no_dt:
     return NULL;
  }
  
@@ -356,40 +358,43 @@ index 6fed22b..4e8b4cb 100644
                           struct sw_displaytarget *dt,
                           unsigned flags)
  {
-+   struct dri_sw_winsys *dri_sw_ws = dri_sw_winsys(ws);
     struct dri_sw_displaytarget *dri_sw_dt = dri_sw_displaytarget(dt);
 -   dri_sw_dt->mapped = dri_sw_dt->data;
--   return dri_sw_dt->mapped;
-+   if (dri_sw_dt->type == DISPLAYTARGET_TYPE_USER)
-+      return dri_sw_dt->data;
-+
-+#if defined(HAVE_LIBDRM)
-+   if (dri_sw_dt->type == DISPLAYTARGET_TYPE_PRIME && dri_sw_ws->vgem_fd >= 0) {
-+
-+      if (dri_sw_dt->mapped)
-+         return dri_sw_dt->mapped;
-+
-+      dri_sw_dt->mapped = mmap_dumb_bo(dri_sw_ws->vgem_fd,
-+                                       dri_sw_dt->vgem_handle,
-+                                       dri_sw_dt->height * dri_sw_dt->stride);
-+      return dri_sw_dt->mapped;
++   struct dri_sw_winsys *dri_sw_ws = dri_sw_winsys(ws);
+ 
+-   if (dri_sw_dt->front_private && (flags & PIPE_TRANSFER_READ)) {
++   switch (dri_sw_dt->type) {
++   case DISPLAYTARGET_TYPE_USER:
++      dri_sw_dt->mapped = dri_sw_dt->data;
++      break;
++   case DISPLAYTARGET_TYPE_PRIME:
++      if (dri_sw_ws->vgem_fd >= 0 && !dri_sw_dt->mapped)
++         dri_sw_dt->mapped = mmap_dumb_bo(dri_sw_ws->vgem_fd,
++                                          dri_sw_dt->vgem_handle,
++                                          dri_sw_dt->height * dri_sw_dt->stride);
++      break;
++   default:
++         dri_sw_dt->mapped = NULL;
 +   }
-+#endif
++   if (dri_sw_dt->mapped && dri_sw_dt->front_private && (flags & PIPE_TRANSFER_READ)) {
+       struct dri_sw_winsys *dri_sw_ws = dri_sw_winsys(ws);
+-      dri_sw_ws->lf->get_image((void *)dri_sw_dt->front_private, 0, 0, dri_sw_dt->width, dri_sw_dt->height, dri_sw_dt->stride, dri_sw_dt->data);
++      dri_sw_ws->lf->get_image((void *)dri_sw_dt->front_private, 0, 0, dri_sw_dt->width, dri_sw_dt->height, dri_sw_dt->stride, dri_sw_dt->mapped);
+    }
+    dri_sw_dt->map_flags = flags;
 +
-+   return NULL;
+    return dri_sw_dt->mapped;
  }
  
- static void
-@@ -141,25 +236,112 @@ dri_sw_displaytarget_unmap(struct sw_winsys *ws,
-                            struct sw_displaytarget *dt)
- {
-    struct dri_sw_displaytarget *dri_sw_dt = dri_sw_displaytarget(dt);
+@@ -156,25 +250,111 @@ dri_sw_displaytarget_unmap(struct sw_winsys *ws,
+       dri_sw_ws->lf->put_image2((void *)dri_sw_dt->front_private, dri_sw_dt->data, 0, 0, dri_sw_dt->width, dri_sw_dt->height, dri_sw_dt->stride);
+    }
+    dri_sw_dt->map_flags = 0;
 +
 +#if defined(HAVE_LIBDRM)
 +   if (dri_sw_dt->mapped)
 +      munmap(dri_sw_dt->mapped, dri_sw_dt->height * dri_sw_dt->stride);
 +#endif
-+
     dri_sw_dt->mapped = NULL;
  }
  
@@ -495,7 +500,7 @@ index 6fed22b..4e8b4cb 100644
     return FALSE;
  }
  
-@@ -196,6 +378,11 @@ dri_sw_displaytarget_display(struct sw_winsys *ws,
+@@ -211,6 +391,11 @@ dri_sw_displaytarget_display(struct sw_winsys *ws,
  static void
  dri_destroy_sw_winsys(struct sw_winsys *winsys)
  {
@@ -507,7 +512,7 @@ index 6fed22b..4e8b4cb 100644
     FREE(winsys);
  }
  
-@@ -209,6 +396,9 @@ dri_create_sw_winsys(struct drisw_loader_funcs *lf)
+@@ -224,6 +409,9 @@ dri_create_sw_winsys(struct drisw_loader_funcs *lf)
        return NULL;
  
     ws->lf = lf;
@@ -518,5 +523,5 @@ index 6fed22b..4e8b4cb 100644
  
     ws->base.is_displaytarget_format_supported = dri_sw_is_displaytarget_format_supported;
 -- 
-2.3.1
+2.7.0.rc3.207.g0ac5344
 
