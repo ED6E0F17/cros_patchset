@@ -4,7 +4,7 @@ hdmi_drive=2
 #sdram_freq=500
 #over_voltage=2
 disable_overscan=1
-gpu_mem=512
+
 cma_lwm=16
 cma_hwm=32
 cma_offline_start=16
