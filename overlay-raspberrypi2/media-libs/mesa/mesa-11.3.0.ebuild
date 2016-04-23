@@ -4,7 +4,7 @@
 
 EAPI=4
 
-CROS_WORKON_COMMIT="4ed4a2af8628e6adaa04fbe489d2d95747cf3634"
+CROS_WORKON_COMMIT="339335811580c522d6ff66878bc40e662739c47b"
 CROS_WORKON_TREE="286d9bc36c9a9302b6578a2d791a97f70c98ff74"
 
 EGIT_REPO_URI="git://anongit.freedesktop.org/mesa/mesa"
@@ -220,7 +220,7 @@ src_configure() {
 		$(use_enable !xlib-glx dri) \
 		--with-dri-drivers=${DRI_DRIVERS} \
 		--with-gallium-drivers=vc4 \
-		$(use egl && echo "--with-egl-platforms=surfaceless")
+		--with-egl-platforms=x11,drm
 }
 
 src_install() {
