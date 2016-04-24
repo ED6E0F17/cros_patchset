@@ -4,8 +4,7 @@
 
 EAPI=4
 
-CROS_WORKON_COMMIT="339335811580c522d6ff66878bc40e662739c47b"
-CROS_WORKON_TREE="286d9bc36c9a9302b6578a2d791a97f70c98ff74"
+CROS_WORKON_BRANCH="chromeos-11.3.0-pre1"
 
 EGIT_REPO_URI="git://anongit.freedesktop.org/mesa/mesa"
 CROS_WORKON_PROJECT="chromiumos/third_party/mesa"
