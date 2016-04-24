@@ -55,14 +55,14 @@
         "num": 2,
         "label": "KERN-A",
         "type": "kernel",
-        "size": "16 MiB"
+        "size": "8 MiB"
       },
       {
         # Kernel for Slot B, no file system.
         "num": 4,
         "label": "KERN-B",
         "type": "kernel",
-        "size": "16 MiB"
+        "size": "8 MiB"
       },
       {
         # Board specific files, mostly unused.
@@ -84,7 +84,7 @@
         "label": "EFI-SYSTEM",
         "type": "efi",
         "fs_format": "vfat",
-        "size": "16 MiB",
+        "size": "32 MiB",
         "uuid": "clear"
       },
       {

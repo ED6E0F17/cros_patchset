@@ -29,7 +29,7 @@ src_install() {
 	doins "${FILESDIR}/xorg.conf"
 
 	insinto /etc/X11/xorg.conf.d
-	doins 20-touchscreen.conf
+	doins 20-mouse.conf
 }
 
 pkg_preinst() {

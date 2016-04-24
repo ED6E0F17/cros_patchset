@@ -30,6 +30,8 @@ install_raspberrypi_bootloader() {
     "${efi_dir}"
 
   info "Installing firmware, kernel and overlays"
+# sudo rm "${ROOT}/firmware/rpi/overlays/.*cmd"
+# sudo rm "${ROOT}/firmware/rpi/overlays/.*tmp"
   sudo cp -r "${ROOT}/firmware/rpi/"* "${efi_dir}/"
 
   sudo umount "${efi_dir}"
