@@ -1,7 +1,7 @@
-From bc996d6d6f7d2da3c2e599bf2feafffa1465729e Mon Sep 17 00:00:00 2001
+From 7389fdc4f8d5c2250dcd37126f39615ea6079079 Mon Sep 17 00:00:00 2001
 From: Zach Reizner <zachr@google.com>
 Date: Fri, 3 Apr 2015 13:04:26 -0700
-Subject: [PATCH 23/24] dri: in swrast use render nodes and custom VGEM dump
+Subject: [PATCH 26/27] dri: in swrast use render nodes and custom VGEM dump
  map ioctl
 
 BUG=chromium:469666
@@ -14,7 +14,7 @@ Change-Id: Ie2b24dc416eef5e8fbc4395db5142b3d960285d6
  1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/src/gallium/winsys/sw/dri/dri_sw_winsys.c b/src/gallium/winsys/sw/dri/dri_sw_winsys.c
-index f50ec2ec9956..e2c2fe5031d4 100644
+index 4e8b4cb..30d2d66 100644
 --- a/src/gallium/winsys/sw/dri/dri_sw_winsys.c
 +++ b/src/gallium/winsys/sw/dri/dri_sw_winsys.c
 @@ -35,6 +35,7 @@
@@ -56,5 +56,5 @@ index f50ec2ec9956..e2c2fe5031d4 100644
        return NULL;
  
 -- 
-2.5.1
+2.3.1
 

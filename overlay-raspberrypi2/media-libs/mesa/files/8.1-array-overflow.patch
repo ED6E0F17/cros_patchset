@@ -1,25 +1,24 @@
-From 71bb9a0967dc9e9047cf647e3c5594ce379edb2c Mon Sep 17 00:00:00 2001
+From ba9d4c2b3d3c7387fba013254eed01a3a8ec769e Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?St=C3=A9phane=20Marchesin?= <marcheu@chromium.org>
-Date: Mon, 7 Mar 2016 18:25:25 -0800
-Subject: [PATCH] CHROMIUM: Avoid crash when overflowing the samplers array
+Date: Mon, 8 Jul 2013 18:32:34 -0700
+Subject: [PATCH 07/27] Avoid crash when overflowing the samplers array
 
-Change-Id: I191a833c3849011ff52a7c3da98a651e0e155c7a
 ---
- src/compiler/glsl/link_uniforms.cpp | 1 +
+ src/glsl/link_uniforms.cpp | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/src/compiler/glsl/link_uniforms.cpp b/src/compiler/glsl/link_uniforms.cpp
-index 940cc61..f61e478 100644
---- a/src/compiler/glsl/link_uniforms.cpp
-+++ b/src/compiler/glsl/link_uniforms.cpp
-@@ -630,6 +630,7 @@ private:
-              */
-             uniform->opaque[shader_type].index = this->next_sampler;
-             this->next_sampler += MAX2(1, uniform->array_elements);
-+            this->next_sampler = MIN2(this->next_sampler, MAX_SAMPLERS);
-          }
+diff --git a/src/glsl/link_uniforms.cpp b/src/glsl/link_uniforms.cpp
+index 59adc29..bdac635 100644
+--- a/src/glsl/link_uniforms.cpp
++++ b/src/glsl/link_uniforms.cpp
+@@ -501,6 +501,7 @@ private:
+           */
+          this->next_sampler +=
+                MAX2(1, uniform->array_elements);
++         this->next_sampler = MIN2(this->next_sampler, MAX_SAMPLERS);
  
           const gl_texture_index target = base_type->sampler_index();
+          const unsigned shadow = base_type->sampler_shadow;
 -- 
-2.7.0.rc3.207.g0ac5344
+2.3.1
 

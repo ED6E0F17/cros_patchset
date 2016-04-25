@@ -1,7 +1,7 @@
-From c285de794e3ca6769373d94b54a39503a60b8e20 Mon Sep 17 00:00:00 2001
+From 9a256f6990cb2d3014502097123acb7efff27f41 Mon Sep 17 00:00:00 2001
 From: Frank Henigman <fjhenigman@chromium.org>
 Date: Wed, 28 May 2014 20:25:12 -0700
-Subject: [PATCH 11/24] draw: keep some unused items in the llvm cache
+Subject: [PATCH 11/27] draw: keep some unused items in the llvm cache
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -21,7 +21,7 @@ Signed-off-by: Frank Henigman <fjhenigman@chromium.org>
  2 files changed, 42 insertions(+), 2 deletions(-)
 
 diff --git a/src/gallium/auxiliary/draw/draw_llvm.c b/src/gallium/auxiliary/draw/draw_llvm.c
-index cf4accfb8825..acc3de0582e6 100644
+index 18bd13c..81482ca 100644
 --- a/src/gallium/auxiliary/draw/draw_llvm.c
 +++ b/src/gallium/auxiliary/draw/draw_llvm.c
 @@ -62,6 +62,8 @@
@@ -33,7 +33,7 @@ index cf4accfb8825..acc3de0582e6 100644
  
  static struct llvm_cache llvm_cache = { NULL };
  
-@@ -596,6 +598,12 @@ static void
+@@ -592,6 +594,12 @@ static void
  llvm_cache_item_ref(struct llvm_cache_item *item)
  {
     ++item->ref_count;
@@ -46,7 +46,7 @@ index cf4accfb8825..acc3de0582e6 100644
  }
  
  
-@@ -605,7 +613,21 @@ llvm_cache_item_unref(struct llvm_cache_item *item)
+@@ -601,7 +609,21 @@ llvm_cache_item_unref(struct llvm_cache_item *item)
     assert(item->ref_count > 0);
     --item->ref_count;
     if (item->ref_count == 0) {
@@ -69,7 +69,7 @@ index cf4accfb8825..acc3de0582e6 100644
     }
  }
  
-@@ -619,9 +641,13 @@ llvm_cache_item_get(struct draw_llvm_variant *variant, unsigned num_inputs)
+@@ -615,9 +637,13 @@ llvm_cache_item_get(struct draw_llvm_variant *variant, unsigned num_inputs)
     struct llvm_cache_item *item;
     struct llvm_cache_key key;
  
@@ -84,7 +84,7 @@ index cf4accfb8825..acc3de0582e6 100644
     if (!llvm_cache.ht)
        return NULL;
  
-@@ -689,6 +715,8 @@ llvm_cache_item_create(struct draw_llvm_variant *variant,
+@@ -685,6 +711,8 @@ llvm_cache_item_create(struct draw_llvm_variant *variant,
  
     memcpy(&item->key, key, sizeof(*key));
  
@@ -94,10 +94,10 @@ index cf4accfb8825..acc3de0582e6 100644
  }
  
 diff --git a/src/gallium/auxiliary/draw/draw_llvm.h b/src/gallium/auxiliary/draw/draw_llvm.h
-index 8e0033e8fe73..df33423855cc 100644
+index 86772c5..799162c 100644
 --- a/src/gallium/auxiliary/draw/draw_llvm.h
 +++ b/src/gallium/auxiliary/draw/draw_llvm.h
-@@ -389,9 +389,19 @@ struct draw_gs_llvm_variant_list_item
+@@ -388,9 +388,19 @@ struct draw_gs_llvm_variant_list_item
  };
  
  
@@ -117,7 +117,7 @@ index 8e0033e8fe73..df33423855cc 100644
  };
  
  struct llvm_cache_key
-@@ -410,6 +420,8 @@ struct llvm_cache_item
+@@ -409,6 +419,8 @@ struct llvm_cache_item
  
     struct llvm_cache_key key;
     unsigned ref_count;
@@ -127,5 +127,5 @@ index 8e0033e8fe73..df33423855cc 100644
  
  struct draw_llvm_variant
 -- 
-2.5.1
+2.3.1
 
