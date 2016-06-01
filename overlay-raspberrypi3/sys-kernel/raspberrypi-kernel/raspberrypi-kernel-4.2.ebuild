@@ -5,14 +5,14 @@ EAPI=4
 
 CROS_WORKON_REPO="git://github.com/raspberrypi"
 CROS_WORKON_PROJECT="linux"
-CROS_WORKON_EGIT_BRANCH="rpi-4.4.y"
+CROS_WORKON_EGIT_BRANCH="rpi-4.2.y"
 CROS_WORKON_BLACKLIST="1"
-CROS_WORKON_COMMIT="46b8d2115868e1390c1ebbfaaaa9163ca31d5d46"
+CROS_WORKON_COMMIT="99b4d38f11cfdcead6be5105620e1acde36bdde5"
 
 # This must be inherited *after* EGIT/CROS_WORKON variables defined
 inherit git-2 cros-kernel2 cros-workon
 
-DESCRIPTION="Chrome OS Kernel for Raspberry Pi2"
+DESCRIPTION="Chrome OS Kernel-raspberrypi2-kms"
 KEYWORDS="arm"
 
 DEPEND="!sys-kernel/chromeos-kernel-next
@@ -22,10 +22,13 @@ RDEPEND="${DEPEND}"
 
 src_install() {
 	cros-kernel2_src_install
+	"${D}/../work/raspberrypi-kernel/scripts/mkknlimg" \
+                "$(cros-workon_get_build_dir)/arch/arm/boot/zImage" \
+                "${T}/kernel.img"
 
 	insinto /firmware/rpi
-	newins "$(cros-workon_get_build_dir)/arch/arm/boot/zImage" "kernel.img"
 	doins "${FILESDIR}"/{cmdline,config}.txt
+	doins "${T}/kernel.img"
 	doins "$(cros-workon_get_build_dir)/arch/arm/boot/dts/bcm2709-rpi-2-b.dtb"
 	doins "$(cros-workon_get_build_dir)/arch/arm/boot/dts/bcm2710-rpi-3-b.dtb"
 	doins -r "$(cros-workon_get_build_dir)/arch/arm/boot/dts/overlays"

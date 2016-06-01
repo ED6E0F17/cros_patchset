@@ -3,11 +3,11 @@
 
 EAPI=4
 
-CROS_WORKON_REPO="git://github.com/raspberrypi"
+CROS_WORKON_REPO="git://github.com/zeldin"
 CROS_WORKON_PROJECT="linux"
-CROS_WORKON_EGIT_BRANCH="rpi-4.4.y"
+CROS_WORKON_EGIT_BRANCH="rpi3"
 CROS_WORKON_BLACKLIST="1"
-CROS_WORKON_COMMIT="46b8d2115868e1390c1ebbfaaaa9163ca31d5d46"
+CROS_WORKON_COMMIT="9171809a953d2afe25f36ca5c069b0e6f2ad7e0e"
 
 # This must be inherited *after* EGIT/CROS_WORKON variables defined
 inherit git-2 cros-kernel2 cros-workon
@@ -24,9 +24,8 @@ src_install() {
 	cros-kernel2_src_install
 
 	insinto /firmware/rpi
-	newins "$(cros-workon_get_build_dir)/arch/arm/boot/zImage" "kernel.img"
+	newins "$(cros-workon_get_build_dir)/arch/arm64/boot/zImage" "kernel8.img"
 	doins "${FILESDIR}"/{cmdline,config}.txt
-	doins "$(cros-workon_get_build_dir)/arch/arm/boot/dts/bcm2709-rpi-2-b.dtb"
-	doins "$(cros-workon_get_build_dir)/arch/arm/boot/dts/bcm2710-rpi-3-b.dtb"
-	doins -r "$(cros-workon_get_build_dir)/arch/arm/boot/dts/overlays"
+	doins "$(cros-workon_get_build_dir)/arch/arm64/boot/dts/bcm2710-rpi-3-b.dtb"
+	doins -r "$(cros-workon_get_build_dir)/arch/arm64/boot/dts/overlays"
 }

@@ -1,0 +1,45 @@
+From 25cad64dd285b99bb8f0eedd27fcd4f4c6a9fb36 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?St=C3=A9phane=20Marchesin?= <marcheu@chromium.org>
+Date: Mon, 14 Mar 2016 18:29:22 -0700
+Subject: [PATCH] lp_rast: Remove alignment constraints
+
+There is no guarantee that |plane| is aligned to a multiple of 16.
+It actually causes crashes on 32 bits platforms, so let's emit the
+unaligned variant instead.
+
+Change-Id: I6036e34dddf271a59f888acbdf52343924e7b916
+---
+ src/gallium/drivers/llvmpipe/lp_rast_tri.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/gallium/drivers/llvmpipe/lp_rast_tri.c b/src/gallium/drivers/llvmpipe/lp_rast_tri.c
+index f4a2f02..09f7a29 100644
+--- a/src/gallium/drivers/llvmpipe/lp_rast_tri.c
++++ b/src/gallium/drivers/llvmpipe/lp_rast_tri.c
+@@ -251,9 +251,9 @@ lp_rast_triangle_32_3_16(struct lp_rasterizer_task *task,
+    unsigned nr = 0;
+ 
+    /* p0 and p2 are aligned, p1 is not (plane size 24 bytes). */
+-   __m128i p0 = _mm_load_si128((__m128i *)&plane[0]); /* clo, chi, dcdx, dcdy */
++   __m128i p0 = _mm_loadu_si128((__m128i *)&plane[0]); /* clo, chi, dcdx, dcdy */
+    __m128i p1 = _mm_loadu_si128((__m128i *)&plane[1]);
+-   __m128i p2 = _mm_load_si128((__m128i *)&plane[2]);
++   __m128i p2 = _mm_loadu_si128((__m128i *)&plane[2]);
+    __m128i zero = _mm_setzero_si128();
+ 
+    __m128i c, dcdx, dcdy, rej4;
+@@ -360,9 +360,9 @@ lp_rast_triangle_32_3_4(struct lp_rasterizer_task *task,
+    unsigned y = (arg.triangle.plane_mask >> 8) + task->y;
+ 
+    /* p0 and p2 are aligned, p1 is not (plane size 24 bytes). */
+-   __m128i p0 = _mm_load_si128((__m128i *)&plane[0]); /* clo, chi, dcdx, dcdy */
++   __m128i p0 = _mm_loadu_si128((__m128i *)&plane[0]); /* clo, chi, dcdx, dcdy */
+    __m128i p1 = _mm_loadu_si128((__m128i *)&plane[1]);
+-   __m128i p2 = _mm_load_si128((__m128i *)&plane[2]);
++   __m128i p2 = _mm_loadu_si128((__m128i *)&plane[2]);
+    __m128i zero = _mm_setzero_si128();
+ 
+    __m128i c, dcdx, dcdy;
+-- 
+2.7.0.rc3.207.g0ac5344
+
