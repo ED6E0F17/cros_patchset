@@ -7,7 +7,7 @@ DESCRIPTION="Chrome OS Firmware"
 HOMEPAGE="http://www.chromium.org/"
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~arm"
+KEYWORDS="~arm ~arm64"
 IUSE=""
 RESTRICT="mirror"
 

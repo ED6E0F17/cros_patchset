@@ -9,7 +9,7 @@ DESCRIPTION="Raspberry Pi bsp (meta package to pull in driver/tool dependencies)
 
 LICENSE="BSD-Google"
 SLOT="0"
-KEYWORDS="arm"
+KEYWORDS="arm arm64"
 IUSE=""
 
 DEPEND=""

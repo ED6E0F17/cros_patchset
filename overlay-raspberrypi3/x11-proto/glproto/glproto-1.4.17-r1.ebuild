@@ -8,7 +8,7 @@ XORG_MULTILIB=yes
 inherit xorg-2
 
 DESCRIPTION="X.Org GL protocol headers"
-KEYWORDS="arm"
+KEYWORDS="arm arm64"
 LICENSE="SGI-B-2.0"
 IUSE=""
 

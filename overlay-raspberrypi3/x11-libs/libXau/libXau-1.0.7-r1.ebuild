@@ -9,7 +9,7 @@ inherit xorg-2
 
 DESCRIPTION="X.Org X authorization library"
 
-KEYWORDS="arm"
+KEYWORDS="arm arm64"
 IUSE=""
 
 RDEPEND=">=x11-proto/xproto-7.0.24[${MULTILIB_USEDEP}]"

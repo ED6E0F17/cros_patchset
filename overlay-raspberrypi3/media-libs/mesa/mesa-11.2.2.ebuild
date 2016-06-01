@@ -31,7 +31,7 @@ fi
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="arm"
+KEYWORDS="arm64"
 RESTRICT="!bindist? ( bindist )"
 
 INTEL_CARDS="i915 i965 ilo intel"

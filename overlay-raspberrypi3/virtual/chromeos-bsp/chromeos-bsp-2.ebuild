@@ -8,6 +8,6 @@ HOMEPAGE="http://src.chromium.org"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="arm"
+KEYWORDS="arm arm64"
 
 RDEPEND="chromeos-base/chromeos-bsp-raspberrypi"

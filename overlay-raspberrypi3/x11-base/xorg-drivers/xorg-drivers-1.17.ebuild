@@ -10,7 +10,7 @@ SRC_URI=""
 
 LICENSE="metapackage"
 SLOT="0"
-KEYWORDS="arm"
+KEYWORDS="arm arm64"
 
 IUSE_INPUT_DEVICES="
 	input_devices_acecad

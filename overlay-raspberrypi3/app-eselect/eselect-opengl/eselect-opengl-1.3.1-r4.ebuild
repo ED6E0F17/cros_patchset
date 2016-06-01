@@ -21,7 +21,7 @@ SRC_URI="http://dev.gentoo.org/~mgorny/dist/opengl.eselect-${PV}.xz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="arm"
+KEYWORDS="arm arm64"
 IUSE=""
 
 DEPEND="app-arch/xz-utils"

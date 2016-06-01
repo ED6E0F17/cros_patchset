@@ -13,7 +13,7 @@ CROS_WORKON_COMMIT="9171809a953d2afe25f36ca5c069b0e6f2ad7e0e"
 inherit git-2 cros-kernel2 cros-workon
 
 DESCRIPTION="Chrome OS Kernel for Raspberry Pi2"
-KEYWORDS="arm"
+KEYWORDS="arm64"
 
 DEPEND="!sys-kernel/chromeos-kernel-next
 	!sys-kernel/chromeos-kernel
