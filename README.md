@@ -36,6 +36,8 @@ Find the folder named "overlays" in the "src" folder of the code you checked out
 
 To build for RPI 2B use "raspberrypi2" instead of "raspberrypi" in the following guide.
 
+Chromium (53) does not support arm64, use "raspberryp2" armv7 build for Pi 3B.
+
 Board setup:
 ------------
 
