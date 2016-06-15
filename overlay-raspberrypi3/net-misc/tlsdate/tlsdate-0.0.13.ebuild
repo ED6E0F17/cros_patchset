@@ -4,7 +4,7 @@
 
 EAPI="4"
 
-inherit autotools vcs-snapshot user
+inherit eutils autotools vcs-snapshot user
 
 DESCRIPTION="Update local time over HTTPS"
 HOMEPAGE="https://github.com/ioerror/tlsdate"
@@ -31,6 +31,8 @@ src_prepare() {
 }
 
 src_configure() {
+	epatch "${FILESDIR}/tlsdate_arm64.patch"
+	epatch "${FILESDIR}/tlsdate_depreciated.patch"
 	econf \
 		--disable-silent-rules \
 		$(use_enable dbus) \
@@ -61,6 +63,6 @@ src_install() {
 }
 
 pkg_preinst() {
-	enewgroup tlsdate 124
-	enewuser tlsdate 124 -1 /dev/null tlsdate
+	enewgroup tlsdate 234
+	enewuser tlsdate 234 -1 /dev/null tlsdate
 }

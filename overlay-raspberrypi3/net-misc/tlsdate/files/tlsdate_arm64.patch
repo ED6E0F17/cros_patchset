@@ -1,0 +1,19 @@
+commit a33c687058b83f3527cfdba4622732518f640d4d
+Author: Marcin Juszkiewicz <mjuszkiewicz@redhat.com>
+Date:   Thu Feb 18 13:24:09 2016 +0100
+
+    seccomp: handle AArch64
+
+diff --git a/src/seccomp.c b/src/seccomp.c
+index f3fc29f..4ba4a4d 100644
+--- a/src/seccomp.c
++++ b/src/seccomp.c
+@@ -48,6 +48,8 @@
+ #   define EM_ARM 40
+ # endif
+ #  define SECCOMP_AUDIT_ARCH AUDIT_ARCH_ARM
++#elif defined(__aarch64__)
++#  define SECCOMP_AUDIT_ARCH AUDIT_ARCH_AARCH64
+ #else
+ #  error "Platform does not support seccomp filter yet"
+ #endif

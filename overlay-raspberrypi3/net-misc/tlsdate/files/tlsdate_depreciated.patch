@@ -1,0 +1,22 @@
+commit 78bd8101825145cf85f0f3582a438eaafdf9ffd9
+Author: Marcin Juszkiewicz <mjuszkiewicz@redhat.com>
+Date:   Thu Feb 18 13:23:58 2016 +0100
+
+    seccomp: open() is deprecated syscall
+    
+    deprecated system calls are not available on several architectures
+
+diff --git a/src/seccomp.c b/src/seccomp.c
+index fbc5a33..f3fc29f 100644
+--- a/src/seccomp.c
++++ b/src/seccomp.c
+@@ -87,7 +87,9 @@ enable_setter_seccomp (void)
+     SC_ALLOW (exit_group),
+     SC_ALLOW (exit),
+ 
++#ifdef __NR_open
+     SC_DENY (open, EINVAL),
++#endif
+     SC_DENY (fcntl, EINVAL),
+     SC_DENY (fstat, EINVAL),
+ #ifdef __NR_mmap
