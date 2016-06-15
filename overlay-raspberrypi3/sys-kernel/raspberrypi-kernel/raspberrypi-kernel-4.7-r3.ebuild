@@ -7,7 +7,7 @@ CROS_WORKON_REPO="git://github.com/anholt"
 CROS_WORKON_PROJECT="linux"
 CROS_WORKON_EGIT_BRANCH="bcm2837-64-next"
 CROS_WORKON_BLACKLIST="1"
-CROS_WORKON_COMMIT="a1955c6717a9c58d982d99be9b6fb01a50a7d83b"
+CROS_WORKON_COMMIT="3e6f17e5d08ec022114c35e6ebe242645717830d"
 
 # This must be inherited *after* EGIT/CROS_WORKON variables defined
 inherit git-2 cros-kernel2 cros-workon
