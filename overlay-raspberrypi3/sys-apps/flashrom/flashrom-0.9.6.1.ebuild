@@ -10,7 +10,7 @@ if [[ ${PV} == "9999" ]] ; then
 	inherit subversion
 else
 	SRC_URI="http://download.flashrom.org/releases/${P}.tar.bz2"
-	KEYWORDS="amd64 arm x86"
+	KEYWORDS="arm64 arm x86"
 fi
 
 DESCRIPTION="Utility for reading, writing, erasing and verifying flash ROM chips"
@@ -51,49 +51,12 @@ flashrom_enable() {
 	local u
 	for u in "$@" ; do _flashrom_enable $u ; done
 }
-
-src_compile() {
-	local progs=0
-	local args=""
-
-	# Programmer
-	flashrom_enable \
-		atahpt bitbang_spi buspirate_spi dediprog drkaiser \
-		ft2232_spi gfxnvidia nic3com nicintel nicintel_spi nicnatsemi nicrealtek \
-		ogp_spi rayer_spi pony_spi \
-		satasii satamv serprog \
-		internal dummy
-	_flashrom_enable wiki PRINT_WIKI
-
-	# You have to specify at least one programmer, and if you specify more than
-	# one programmer you have to include either dummy or internal in the list.
-	for prog in ${IUSE//[+-]} ; do
-		case ${prog} in
-			internal|dummy|wiki) continue ;;
-		esac
-
-		use ${prog} && : $(( progs++ ))
-	done
-	if [ $progs -ne 1 ] ; then
-		if ! use internal && ! use dummy ; then
-			ewarn "You have to specify at least one programmer, and if you specify"
-			ewarn "more than one programmer, you have to enable either dummy or"
-			ewarn "internal as well.  'internal' will be the default now."
-			args+=" CONFIG_INTERNAL=yes"
-		fi
-	fi
-
-	# WARNERROR=no, bug 347879
-	tc-export AR CC RANLIB
-	emake WARNERROR=no ${args} || die
+src_configure() {
+	echo "disabled"
 }
-
+src_compile() {
+	 echo "disabled"
+}
 src_install() {
-	dosbin flashrom || die
-	doman flashrom.8
-	dodoc ChangeLog README
-
-	if use doc; then
-		dodoc Documentation/*.txt
-	fi
+	 echo "disabled"
 }
