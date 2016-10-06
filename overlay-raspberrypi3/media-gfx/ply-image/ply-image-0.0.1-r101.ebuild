@@ -2,8 +2,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="4"
-CROS_WORKON_COMMIT="7d5367e2a8618718e90274ae920bc6f406b59b9e"
-CROS_WORKON_TREE="e60fc42baf7643809446cb4e42a033ff3ff6db66"
+CROS_WORKON_COMMIT="6cf4e4cd968bb72ade54e423e2b97eb3a80c6de9"
+CROS_WORKON_TREE="b9ee1bc4b9eec6d4124a37805920a7bb1f90ab5c"
 CROS_WORKON_PROJECT="chromiumos/third_party/ply-image"
 CROS_WORKON_OUTOFTREE_BUILD="1"
 
