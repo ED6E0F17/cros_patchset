@@ -1,1 +1,1 @@
-coherent_pool=16M smsc95xx.turbo_mode=N console=tty2 root=/dev/mmcblk0p3 rootfstype=ext2 rootwait ro
+smsc95xx.turbo_mode=N console=tty2 root=/dev/mmcblk0p3 rootfstype=ext2 rootwait ro
