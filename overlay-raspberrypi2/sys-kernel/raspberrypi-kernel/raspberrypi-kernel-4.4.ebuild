@@ -7,7 +7,7 @@ CROS_WORKON_REPO="git://github.com/raspberrypi"
 CROS_WORKON_PROJECT="linux"
 CROS_WORKON_EGIT_BRANCH="rpi-4.4.y"
 CROS_WORKON_BLACKLIST="1"
-CROS_WORKON_COMMIT="1c8b82bcb72f95d8f9d606326178192a2abc9c9c"
+CROS_WORKON_COMMIT="5afda48c3408e15742d4569459a4ff668e2857f7"
 
 # This must be inherited *after* EGIT/CROS_WORKON variables defined
 inherit git-2 cros-kernel2 cros-workon

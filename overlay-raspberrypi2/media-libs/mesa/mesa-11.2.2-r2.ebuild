@@ -155,6 +155,8 @@ src_prepare() {
 	[[ ${PV} != 9999* ]] && epatch "${FILESDIR}"/glx_ro_text_segm.patch
 
 	eautoreconf
+
+	rm -f "${D}"/usr/include/{EGL,GLES,GLES2,GLES3,KHR}/*.h || die "Removing GLES headers failed."
 }
 
 multilib_src_configure() {
