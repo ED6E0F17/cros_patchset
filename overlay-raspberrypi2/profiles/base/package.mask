@@ -1,1 +1,1 @@
->=media-libs/mesa-11.3
+>=media-libs/mesa-12.1
